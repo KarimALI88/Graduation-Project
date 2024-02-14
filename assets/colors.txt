@@ -1,0 +1,3 @@
+main color : #071355 
+inputs background in signup & signin : #071355 + 75% transparency
+input background : #ECECEC
