@@ -9,10 +9,14 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "@react-native-community/geolocation": "^3.1.0",
+    "@react-native-mapbox-gl/maps": "^8.6.0-beta.0",
     "expo": "~50.0.6",
+    "expo-location": "~16.5.3",
     "expo-status-bar": "~1.11.1",
     "react": "18.2.0",
     "react-native": "0.73.4",
+    "react-native-maps": "^1.10.2",
     "react-native-paper": "^5.12.3",
     "react-native-picker-select": "^9.0.1",
     "react-native-vector-icons": "^10.0.3"
@@ -20,5 +24,5 @@
   "devDependencies": {
     "@babel/core": "^7.20.0"
   },
-  "private":true
+  "private": true
 }
