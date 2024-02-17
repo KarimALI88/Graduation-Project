@@ -18,6 +18,7 @@ import {
   
   export default function ReqHospital() {
     const [location, setLocation] = useState(null);
+    const [count, setCount] = useState(1);
   
     useEffect(() => {
       (async () => {
@@ -29,7 +30,7 @@ import {
         let location = await Location.getCurrentPositionAsync({});
         setLocation(location);
       })();
-    }, []);
+    }, [count]);
   
     return (
       <SafeAreaView style={styles.container}>
@@ -139,8 +140,10 @@ import {
               <MapView
                 style={{ flex: 1, height: 200 }}
                 initialRegion={{
-                  latitude: location ? location.coords.latitude : 0,
-                  longitude: location ? location.coords.longitude : 0,
+                  latitude: location ? location.coords.latitude : 30.05364,
+                  longitude: location ? location.coords.longitude : 31.50802,
+                  // latitude: 30.05364,
+                  // longitude: 31.50802,
                   latitudeDelta: 0.0922,
                   longitudeDelta: 0.0421,
                 }}

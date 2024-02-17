@@ -27,12 +27,12 @@ export default function Signup() {
           />
         </View>
         <View style={styles.createAcc}>
-          <FontAwesome name="stethoscope" size={60} color="#071355" />
+          <FontAwesome name="stethoscope" size={60} color="#900" />
           <Text style={styles.createAccText}>إنشاء حساب</Text>
         </View>
         <View style={styles.inputsView}>
           <View style={styles.labelView}>
-            <FontAwesome name="user" size={30} color="#071355" />
+            <FontAwesome name="user" size={30} color="#900" />
             <Text style={styles.label}>الاسم كامل</Text>
           </View>
           <TextInput
@@ -44,7 +44,7 @@ export default function Signup() {
         {/* age*/}
         <View style={styles.inputsView}>
           <View style={styles.labelView}>
-            <FontAwesome name="calendar" size={30} color="#071355" />
+            <FontAwesome name="calendar" size={30} color="#900" />
             <Text style={styles.label}> العمر</Text>
           </View>
           <TextInput
@@ -57,7 +57,7 @@ export default function Signup() {
         {/* phone*/}
         <View style={styles.inputsView}>
           <View style={styles.labelView}>
-            <FontAwesome name="phone" size={30} color="#071355" />
+            <FontAwesome name="phone" size={30} color="#900" />
             <Text style={styles.label}> الهاتف</Text>
           </View>
           <TextInput
@@ -70,7 +70,7 @@ export default function Signup() {
         {/* email*/}
         <View style={styles.inputsView}>
           <View style={styles.labelView}>
-            <FontAwesome name="envelope" size={30} color="#071355" />
+            <FontAwesome name="envelope" size={30} color="#900" />
             <Text style={styles.label}> البريد الالكتروني</Text>
           </View>
           <TextInput
@@ -83,7 +83,7 @@ export default function Signup() {
         {/* password*/}
         <View style={styles.inputsView}>
           <View style={styles.labelView}>
-            <FontAwesome name="key" size={30} color="#071355" />
+            <FontAwesome name="key" size={30} color="#900" />
             <Text style={styles.label}> كلمه المرور</Text>
           </View>
           <TextInput
@@ -97,7 +97,7 @@ export default function Signup() {
         {/* confirmpassword*/}
         <View style={styles.inputsView}>
           <View style={styles.labelView}>
-            <FontAwesome name="key" size={30} color="#071355" />
+            <FontAwesome name="key" size={30} color="#900" />
             <Text style={styles.label}> تأكيد كلمه المرور</Text>
           </View>
           <TextInput
@@ -111,7 +111,7 @@ export default function Signup() {
         {/* gender*/}
         <View style={styles.inputsView}>
           <View style={styles.labelView}>
-            <FontAwesome name="venus-mars" size={30} color="#071355"/>
+            <FontAwesome name="venus-mars" size={30} color="#900"/>
             <Text style={styles.label}> النوع </Text>
           </View>
           <RNPickerSelect
