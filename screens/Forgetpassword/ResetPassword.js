@@ -12,10 +12,10 @@ import {
 } from 'react-native';
 import { FontAwesome } from "@expo/vector-icons";
 
-const bg= require('../assets/signin.jpg')
+const bg= require('../../assets/signin.jpg')
 
 
-function SigninScreen() {
+function ResetPassword() {
   return (
     <SafeAreaView style={styles.contanier}>
         
@@ -24,28 +24,29 @@ function SigninScreen() {
         <View style={styles.form}>
         <View style={styles.createAcc}>
           <FontAwesome name="stethoscope" size={60} color="#900" />
-          <Text style={styles.createAccText}>تسجيل الدخول</Text>
+          <Text style={styles.createAccText}>تغيير كلمه السر</Text>
         </View>
         <View style={styles.inputsView}>
           <View style={styles.labelView}>
             <FontAwesome name="envelope" size={30} color="#900" />
-            <Text style={styles.label}> البريد الالكتروني</Text>
+            <Text style={styles.label}> كلمه المرور الجديدة</Text>
           </View>
           <TextInput
             style={styles.input}
-            placeholder=" البريد الالكتروني"
+            placeholder=" كلمه المرور الجديدة"
             placeholderTextColor={"#071355"}
-            keyboardType="email-address"
+            keyboardType="default"
+            secureTextEntry={true}
           />
         </View>
         <View style={styles.inputsView}>
           <View style={styles.labelView}>
             <FontAwesome name="key" size={30} color="#900" />
-            <Text style={styles.label}> كلمه المرور</Text>
+            <Text style={styles.label}> تاكيد كلمه المرور الجديدة</Text>
           </View>
           <TextInput
             style={styles.input}
-            placeholder="  كلمه المرور"
+            placeholder="تاكيد كلمه المرور الجديدة"
             placeholderTextColor={"#071355"}
             keyboardType="default"
             secureTextEntry={true}
@@ -61,12 +62,12 @@ function SigninScreen() {
   )
 }
 
-export default SigninScreen
+export default ResetPassword
 
 const styles=StyleSheet.create({
     contanier:{
         flex: 1,
-       // paddingVertical: StatusBar.currentHeight,
+       paddingVertical: StatusBar.currentHeight,
         justifyContent: 'center',
         borderTopRightRadius:30,
         borderTopLeftRadius:40,

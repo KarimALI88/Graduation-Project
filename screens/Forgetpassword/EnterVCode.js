@@ -12,10 +12,10 @@ import {
 } from 'react-native';
 import { FontAwesome } from "@expo/vector-icons";
 
-const bg= require('../assets/signin.jpg')
+const bg= require('../../assets/signin.jpg')
 
 
-function SigninScreen() {
+function EnterVCode() {
   return (
     <SafeAreaView style={styles.contanier}>
         
@@ -24,35 +24,23 @@ function SigninScreen() {
         <View style={styles.form}>
         <View style={styles.createAcc}>
           <FontAwesome name="stethoscope" size={60} color="#900" />
-          <Text style={styles.createAccText}>تسجيل الدخول</Text>
+          <Text style={styles.createAccText}>تغيير كلمه السر</Text>
         </View>
         <View style={styles.inputsView}>
           <View style={styles.labelView}>
             <FontAwesome name="envelope" size={30} color="#900" />
-            <Text style={styles.label}> البريد الالكتروني</Text>
+            <Text style={styles.label}> ادخل كود التاكيد</Text>
           </View>
           <TextInput
             style={styles.input}
-            placeholder=" البريد الالكتروني"
+            placeholder=" الكود"
             placeholderTextColor={"#071355"}
             keyboardType="email-address"
           />
         </View>
-        <View style={styles.inputsView}>
-          <View style={styles.labelView}>
-            <FontAwesome name="key" size={30} color="#900" />
-            <Text style={styles.label}> كلمه المرور</Text>
-          </View>
-          <TextInput
-            style={styles.input}
-            placeholder="  كلمه المرور"
-            placeholderTextColor={"#071355"}
-            keyboardType="default"
-            secureTextEntry={true}
-          />
-        </View>
+        
         <Pressable>
-          <Text style={styles.button}>تسجيل </Text>
+          <Text style={styles.button}>متابعه </Text>
         </Pressable>
      </View>
      
@@ -61,7 +49,7 @@ function SigninScreen() {
   )
 }
 
-export default SigninScreen
+export default EnterVCode
 
 const styles=StyleSheet.create({
     contanier:{

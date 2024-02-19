@@ -111,7 +111,7 @@ export default function Signup() {
         {/* gender*/}
         <View style={styles.inputsView}>
           <View style={styles.labelView}>
-            <FontAwesome name="venus-mars" size={30} color="#900"/>
+            <FontAwesome name="venus-mars" size={30} color="#900" />
             <Text style={styles.label}> النوع </Text>
           </View>
           <RNPickerSelect
@@ -136,7 +136,7 @@ const styles = StyleSheet.create({
     paddingVertical: StatusBar.currentHeight,
     paddingHorizontal: 15,
   },
-  imageContainer : {
+  imageContainer: {
     justifyContent: "center",
     alignItems: "center",
   },
