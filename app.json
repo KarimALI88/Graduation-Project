@@ -7,7 +7,7 @@
     "icon": "./assets/hospital-icon.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/hospital-icon.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },

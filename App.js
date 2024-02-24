@@ -14,11 +14,11 @@ export default function App() {
       {/* <Index/> */}
       {/* <Signup/> */}
       {/* <ReqHospital/>  */}
-      {/* <SigninScreen/>  */}
+      <SigninScreen/> 
       {/* <Profile/> */}
       {/* <EnterEmail/> */}
       {/* <EnterVCode/> */}
-      <ResetPassword/>
+      {/* <ResetPassword/> */}
     </View>
   );
 }

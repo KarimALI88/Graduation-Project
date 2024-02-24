@@ -9,14 +9,15 @@ import {
 } from "react-native";
 
 import { FontAwesome } from "@expo/vector-icons";
-
-const image = require("../assets/profile-image.png");
+const image = require("../assets/women.png");
 
 function Profile() {
   return (
     <View style={styles.container}>
-      <Image source={image} resizeMode="cover" style={styles.profileImg} />
       <ScrollView>
+        <View style={styles.profileImgContainer}>
+          <Image source={image} style={styles.profileImg} resizeMode="contain" />
+        </View>
         {/* {emial} */}
         <View style={styles.inputsView}>
           <View style={styles.labelView}>
@@ -80,13 +81,14 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingVertical: StatusBar.currentHeight,
   },
-  profileImg: {
-    // flex: 0.5, // Set the width of the image to 20% of its parent's width
-    // aspectRatio: 1, // Maintain the aspect ratio of the image
-    width: 450,
-    height: 450,
+  profileImgContainer: {
     justifyContent: "center",
-    display: "flex",
+    alignItems: "center",
+  },
+  profileImg: {
+    // height: '60%',
+    width: 400,
+    height: 300,
   },
   inputsView: {
     marginTop: 40,
@@ -126,7 +128,7 @@ const styles = StyleSheet.create({
     fontWeight: "400",
     paddingVertical: 20,
     paddingHorizontal: 20,
-    borderBottomWidth: 2,
-    borderBottomColor: "#071355",
+    // borderBottomWidth: 2,
+    // borderBottomColor: "#071355",
   },
 });

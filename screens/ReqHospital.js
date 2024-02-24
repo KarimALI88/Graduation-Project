@@ -89,7 +89,7 @@ export default function ReqHospital() {
                 { label: "نزيف", value: "نزيف" },
                 { label: "ذبحة صدرية", value: "ذبحة صدرية" },
                 { label: "جلطات", value: "جلطات" },
-                { label: "ازمة قلبية", value: "ازمة قلبية" },
+                { label: "أزمة قلبية", value: "أزمة قلبية" },
                 { label: "تسمم", value: "تسمم" },
                 { label: "حوادث", value: "حوادث" },
                 { label: "حروق", value: "حروق" },

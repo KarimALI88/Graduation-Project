@@ -13,8 +13,6 @@ import RNPickerSelect from "react-native-picker-select";
 import { FontAwesome } from "@expo/vector-icons";
 
 const signupImage = require("../assets/signup-img.png");
-const signupIcon = require("../assets/sma3at.png");
-
 export default function Signup() {
   return (
     <SafeAreaView style={styles.container}>
@@ -30,14 +28,15 @@ export default function Signup() {
           <FontAwesome name="stethoscope" size={60} color="#900" />
           <Text style={styles.createAccText}>إنشاء حساب</Text>
         </View>
+        {/* user name */}
         <View style={styles.inputsView}>
           <View style={styles.labelView}>
             <FontAwesome name="user" size={30} color="#900" />
-            <Text style={styles.label}>الاسم كامل</Text>
+            <Text style={styles.label}> اسم المستخدم</Text>
           </View>
           <TextInput
             style={styles.input}
-            placeholder="الاسم كامل"
+            placeholder=" كريم علي "
             placeholderTextColor={"#071355"}
           />
         </View>
@@ -75,7 +74,7 @@ export default function Signup() {
           </View>
           <TextInput
             style={styles.input}
-            placeholder=" البريد الالكتروني"
+            placeholder="******@gmail.com"
             placeholderTextColor={"#071355"}
             keyboardType="email-address"
           />
