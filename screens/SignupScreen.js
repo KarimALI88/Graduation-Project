@@ -1,5 +1,5 @@
+import React, { useState } from "react";
 import {
-  ScrollView,
   View,
   Text,
   Image,
@@ -8,127 +8,228 @@ import {
   SafeAreaView,
   TextInput,
   Pressable,
+  Button,
 } from "react-native";
+import { Toast } from 'toastify-react-native'
+import { Formik } from "formik";
+import { ScrollView } from "react-native";
 import RNPickerSelect from "react-native-picker-select";
 import { FontAwesome } from "@expo/vector-icons";
-
+import * as Yup from 'yup'
 const signupImage = require("../assets/signup-img.png");
+
 export default function Signup() {
+  let [apiMessage,setApiMessage]=useState('')
+  let formValidation=Yup.object({
+    userName:Yup.string().min(3,"اسم المستخدم ثلاثة حروف او اكتر").max(10,'اسم المستخدم اقل من 10 حروف').required("يرجى ادخال اسم المستخدم"),
+    email:Yup.string().email("الخاص بك بطريقة صحيحة'gmail'يرجى ادخال ").required("الخاص بك'gmail'يرجى ادخال"),
+    password:Yup.string().required('يرجى ادخال كلمة المرور').matches(/^[A-Z][\w @]{5,8}$/,'كلمة المرور يجب أن تحتوي على حرف كبير وحرف خاص'),
+    passwordConfirm:Yup.string().required('يرجي تاكيد كلمه المرور').oneOf([Yup.ref('password')],'تأكيد كلمة المرور غير صحيح'),
+    phone:Yup.string().matches(/^01[0125][0-9]{8}$/,'رقم الهاتف يجب ان يكون مصرى').required('يرجى ادخال رقم الهاتف'),
+    age:Yup.string().required('يرجى ادخال العمر')
+
+
+
+  })
+    
+
+  async function registerSubmit(values) {
+    try {
+        const response = await fetch('http://192.168.1.8:8000/api/v1/auth/signup', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              userName:values.userName,
+              email:values.email,
+              phone:values.phone,
+              password:values.password,
+              passwordConfirm:values.passwordConfirm,
+              gender:"female",
+              age:values.age
+            })
+        })
+        const data = await response.json();
+        console.log(data);
+        if(data.errors && data.errors.length > 0 && data.errors[0].type ==='field'){
+          setApiMessage(data.errors.msg)
+          Toast.error(apiMessage);
+        }else{
+          // setApiMessage(data.message)
+          Toast.success("تم انشاء حساب ");
+        }
+    } 
+    catch(err){
+      
+     console.log(err)
+    }
+
+}
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView showsVerticalScrollIndicator={false}>
-        <View style={styles.imageContainer}>
-          <Image
-            source={signupImage}
-            style={styles.signupImg}
-            resizeMode="contain"
-          />
-        </View>
-        <View style={styles.createAcc}>
-          <FontAwesome name="stethoscope" size={60} color="#900" />
-          <Text style={styles.createAccText}>إنشاء حساب</Text>
-        </View>
-        {/* user name */}
-        <View style={styles.inputsView}>
-          <View style={styles.labelView}>
-            <FontAwesome name="user" size={30} color="#900" />
-            <Text style={styles.label}> اسم المستخدم</Text>
+      <Formik
+        initialValues={{
+          userName: "",
+          email: "",
+          password: "",
+          passwordConfirm: "",
+          phone: "",
+          gender: "",
+          age: "",
+        }}
+        validationSchema={formValidation}
+        onSubmit={registerSubmit}
+      >
+        {({ handleChange, handleBlur, handleSubmit, values,errors,touched}) => (
+          <View>
+          
+            <ScrollView showsVerticalScrollIndicator={false}>
+              <View style={styles.imageContainer}>
+                <Image
+                  source={signupImage}
+                  style={styles.signupImg}
+                  resizeMode="contain"
+                />
+              </View>
+              <View style={styles.createAcc}>
+                <FontAwesome name="stethoscope" size={60} color="#900" />
+                <Text style={styles.createAccText}>إنشاء حساب</Text>
+              </View>
+              <View>
+              {/* {apiError?<Text style={{ fontSize: 10, color: 'red' }}>{apiError}</Text>:""} */}
+              </View>
+              {/* user name */}
+              <View style={styles.inputsView}>
+                <View style={styles.labelView}>
+                  <FontAwesome name="user" size={30} color="#900" />
+                  <Text style={styles.label}> اسم المستخدم</Text>
+                </View>
+                <TextInput
+                  style={styles.input}
+                  placeholder=" كريم علي "
+                  placeholderTextColor={"#071355"}
+                  onChangeText={handleChange("userName")}
+                  onBlur={handleBlur("userName")}
+                  value={values.userName}
+                />
+              </View>
+              {/* age*/}
+              <View style={styles.inputsView}>
+                <View style={styles.labelView}>
+                  <FontAwesome name="calendar" size={30} color="#900" />
+                  <Text style={styles.label}> العمر</Text>
+                </View>
+                <TextInput
+                  style={styles.input}
+                  placeholder="العمر "
+                  placeholderTextColor={"#071355"}
+                  keyboardType="numeric"
+                  onChangeText={handleChange("age")}
+                  onBlur={handleBlur("age")}
+                  value={values.age}
+                />
+                {errors.age &&touched.age?<Text style={{ fontSize: 10, color: 'red' }}>{errors.age}</Text>:""}
+              </View>
+              {/* phone*/}
+              <View style={styles.inputsView}>
+                <View style={styles.labelView}>
+                  <FontAwesome name="phone" size={30} color="#900" />
+                  <Text style={styles.label}> الهاتف</Text>
+                </View>
+                <TextInput
+                  style={styles.input}
+                  placeholder=" الهاتف"
+                  placeholderTextColor={"#071355"}
+                  keyboardType="phone-pad"
+                  onChangeText={handleChange("phone")}
+                  onBlur={handleBlur("phone")}
+                  value={values.phone}
+                />
+                {errors.phone&&touched.phone?<Text style={{ fontSize: 10, color: 'red' }}>{errors.phone}</Text>:""}
+              </View>
+              {/* email*/}
+              <View style={styles.inputsView}>
+                <View style={styles.labelView}>
+                  <FontAwesome name="envelope" size={30} color="#900" />
+                  <Text style={styles.label}> البريد الالكتروني</Text>
+                </View>
+                <TextInput
+                  style={styles.input}
+                  placeholder="******@gmail.com"
+                  placeholderTextColor={"#071355"}
+                  keyboardType="email-address"
+                  onChangeText={handleChange("email")}
+                  onBlur={handleBlur("email")}
+                  value={values.email}
+                />
+                {errors.email &&touched.email?<Text style={{ fontSize: 10, color: 'red' }}>{errors.email}</Text>:""}
+              </View>
+              {/* password*/}
+              <View style={styles.inputsView}>
+                <View style={styles.labelView}>
+                  <FontAwesome name="key" size={30} color="#900" />
+                  <Text style={styles.label}> كلمه المرور</Text>
+                </View>
+                <TextInput
+                  style={styles.input}
+                  placeholder="  كلمه المرور"
+                  placeholderTextColor={"#071355"}
+                  keyboardType="default"
+                  secureTextEntry={true}
+                  onChangeText={handleChange("password")}
+                  onBlur={handleBlur("password")}
+                  value={values.password}
+                />
+                {errors.password&&touched.password?<Text style={{ fontSize: 10, color: 'red' }}>{errors.password}</Text>:""}
+              </View>
+              {/* confirmpassword*/}
+              <View style={styles.inputsView}>
+                <View style={styles.labelView}>
+                  <FontAwesome name="key" size={30} color="#900" />
+                  <Text style={styles.label}> تأكيد كلمه المرور</Text>
+                </View>
+                <TextInput
+                  style={styles.input}
+                  placeholder=" تأكيد كلمه المرور"
+                  placeholderTextColor={"#071355"}
+                  keyboardType="default"
+                  secureTextEntry={true}
+                  onChangeText={handleChange("passwordConfirm")}
+                  onBlur={handleBlur("passwordConfirm")}
+                  value={values.passwordConfirm}
+                />
+                {errors.passwordConfirm&&touched.passwordConfirm&&<Text style={{ fontSize: 10, color: 'red' }}>{errors.passwordConfirm}</Text>}
+              </View>
+              {/* gender*/}
+              <View style={styles.inputsView}>
+                <View style={styles.labelView}>
+                  <FontAwesome name="venus-mars" size={30} color="#900" />
+                  <Text style={styles.label}> النوع </Text>
+                </View>
+                <RNPickerSelect
+                  onValueChange={(value) => console.log(value)}
+                  items={[
+                    { label: "ذكر", value: "male" },
+                    { label: "انثي", value: "female" },
+                  ]}
+                  onChangeText={handleChange("gender")}
+                  onBlur={handleBlur("gender")}
+                  value={values.gender}
+                />
+              </View>
+              <Pressable onPress={handleSubmit}>
+                <Text style={styles.button} type="submit">
+                  تسجيل{" "}
+                </Text>
+              </Pressable>
+            </ScrollView>
           </View>
-          <TextInput
-            style={styles.input}
-            placeholder=" كريم علي "
-            placeholderTextColor={"#071355"}
-          />
-        </View>
-        {/* age*/}
-        <View style={styles.inputsView}>
-          <View style={styles.labelView}>
-            <FontAwesome name="calendar" size={30} color="#900" />
-            <Text style={styles.label}> العمر</Text>
-          </View>
-          <TextInput
-            style={styles.input}
-            placeholder="العمر "
-            placeholderTextColor={"#071355"}
-            keyboardType="numeric"
-          />
-        </View>
-        {/* phone*/}
-        <View style={styles.inputsView}>
-          <View style={styles.labelView}>
-            <FontAwesome name="phone" size={30} color="#900" />
-            <Text style={styles.label}> الهاتف</Text>
-          </View>
-          <TextInput
-            style={styles.input}
-            placeholder=" الهاتف"
-            placeholderTextColor={"#071355"}
-            keyboardType="phone-pad"
-          />
-        </View>
-        {/* email*/}
-        <View style={styles.inputsView}>
-          <View style={styles.labelView}>
-            <FontAwesome name="envelope" size={30} color="#900" />
-            <Text style={styles.label}> البريد الالكتروني</Text>
-          </View>
-          <TextInput
-            style={styles.input}
-            placeholder="******@gmail.com"
-            placeholderTextColor={"#071355"}
-            keyboardType="email-address"
-          />
-        </View>
-        {/* password*/}
-        <View style={styles.inputsView}>
-          <View style={styles.labelView}>
-            <FontAwesome name="key" size={30} color="#900" />
-            <Text style={styles.label}> كلمه المرور</Text>
-          </View>
-          <TextInput
-            style={styles.input}
-            placeholder="  كلمه المرور"
-            placeholderTextColor={"#071355"}
-            keyboardType="default"
-            secureTextEntry={true}
-          />
-        </View>
-        {/* confirmpassword*/}
-        <View style={styles.inputsView}>
-          <View style={styles.labelView}>
-            <FontAwesome name="key" size={30} color="#900" />
-            <Text style={styles.label}> تأكيد كلمه المرور</Text>
-          </View>
-          <TextInput
-            style={styles.input}
-            placeholder=" تأكيد كلمه المرور"
-            placeholderTextColor={"#071355"}
-            keyboardType="default"
-            secureTextEntry={true}
-          />
-        </View>
-        {/* gender*/}
-        <View style={styles.inputsView}>
-          <View style={styles.labelView}>
-            <FontAwesome name="venus-mars" size={30} color="#900" />
-            <Text style={styles.label}> النوع </Text>
-          </View>
-          <RNPickerSelect
-            onValueChange={(value) => console.log(value)}
-            items={[
-              { label: "ذكر", value: "male" },
-              { label: "انثي", value: "female" },
-            ]}
-          />
-        </View>
-        <Pressable>
-          <Text style={styles.button}>تسجيل </Text>
-        </Pressable>
-      </ScrollView>
+        )}
+      </Formik>
     </SafeAreaView>
   );
 }
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,

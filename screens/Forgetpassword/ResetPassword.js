@@ -1,25 +1,75 @@
+import React, { useState } from "react";
 import {
   View,
-  SafeAreaView,
-  ScrollView,
   Text,
-  TextInput,
   Image,
-  Button,
-  StyleSheet,
   StatusBar,
+  StyleSheet,
+  SafeAreaView,
+  TextInput,
   Pressable,
+  Button,
 } from "react-native";
+import { Toast } from 'toastify-react-native'
+import { Formik } from "formik";
+import { ScrollView } from "react-native";
+import RNPickerSelect from "react-native-picker-select";
 import { FontAwesome } from "@expo/vector-icons";
+import * as Yup from 'yup'
 
-// const bg= require('../../assets/signin.jpg')
+export default function ResetPassword() {
+  const [apiMessage,setApiMessage]=useState('')
+  const JWT = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NWUxZGIzOTdmNzg3ZjliMWI3MWViNGUiLCJpYXQiOjE3MDkzMTg4MDIsImV4cCI6MTcxNzk1ODgwMn0.EkfxpObCa6FmyUmvJDFo0_mxQJZS5ZpiUOvsPfACk38"
+  let formValidation=Yup.object({
+    newPassword:Yup.string().required('يرجى ادخال كلمة المرور').matches(/^[A-Z][\w @]{5,8}$/,'كلمة المرور يجب أن تحتوي على حرف كبير وحرف خاص'),
+    passwordConfirm:Yup.string().required('يرجي تاكيد كلمه المرور').oneOf([Yup.ref('newPassword')],'تأكيد كلمة المرور غير صحيح'),
+  })
+    
 
-function ResetPassword() {
+  async function newPasswordSubmit(values) {
+    try {
+        const response = await fetch('http://192.168.1.8:8000/api/v1/auth/resetPassword', {
+            method: 'PUT',
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: "Bearer " + JWT,
+
+            },
+            body: JSON.stringify({
+              newPassword:values.newPassword,
+              passwordConfirm:values.passwordConfirm,
+            })
+        })
+        const data = await response.json();
+        console.log(data);
+        if(data){
+          setApiMessage(data.message)
+          Toast.success(apiMessage);
+        }else{
+          setApiMessage(data.message)
+          Toast.error(apiMessage);
+        }
+    } 
+    catch(err){
+      
+      console.log(err);
+    }
+}
   return (
-    <SafeAreaView style={styles.contanier}>
-      {/* <Image source={bg} style={styles.Image} resizeMode="cover" /> */}
-      <ScrollView>
-        <View style={styles.imageContainer}>
+    <SafeAreaView style={styles.container}>
+      <Formik
+        initialValues={{
+          newPassword: "",
+          passwordConfirm: "",
+        }}
+        validationSchema={formValidation}
+        onSubmit={newPasswordSubmit}
+      >
+        {({ handleChange, handleBlur, handleSubmit, values,errors,touched}) => (
+          <View>
+          
+            <ScrollView showsVerticalScrollIndicator={false}>
+              <View style={styles.imageContainer}>
           <Image
             source={{
               uri: "https://img.freepik.com/free-photo/fun-3d-cartoon-illustration-indian-doctor_183364-114487.jpg?w=360&t=st=1708419125~exp=1708419725~hmac=673a911799f6fc9e5d5bde285346169af5f270a5ef675ceec33f29555b6e401e",
@@ -28,55 +78,69 @@ function ResetPassword() {
             resizeMode="contain"
           />
         </View>
-        <View style={styles.form}>
+           <View style={styles.form}>
           <View style={styles.createAcc}>
             <FontAwesome name="stethoscope" size={60} color="#900" />
             <Text style={styles.createAccText}>تغيير كلمه السر</Text>
           </View>
-          <View style={styles.inputsView}>
-            <View style={styles.labelView}>
-              <FontAwesome name="envelope" size={30} color="#900" />
-              <Text style={styles.label}> كلمه المرور الجديدة</Text>
-            </View>
-            <TextInput
-              style={styles.input}
-              placeholder=" كلمه المرور الجديدة"
-              placeholderTextColor={"#071355"}
-              keyboardType="default"
-              secureTextEntry={true}
-            />
           </View>
-          <View style={styles.inputsView}>
-            <View style={styles.labelView}>
-              <FontAwesome name="key" size={30} color="#900" />
-              <Text style={styles.label}> تاكيد كلمه المرور الجديدة</Text>
-            </View>
-            <TextInput
-              style={styles.input}
-              placeholder="تاكيد كلمه المرور الجديدة"
-              placeholderTextColor={"#071355"}
-              keyboardType="default"
-              secureTextEntry={true}
-            />
+              <View>
+              
+              </View>
+              
+              {/* password*/}
+              <View style={styles.inputsView}>
+                <View style={styles.labelView}>
+                  <FontAwesome name="key" size={30} color="#900" />
+                  <Text style={styles.label}> كلمه المرور</Text>
+                </View>
+                <TextInput
+                  style={styles.input}
+                  placeholder="  كلمه المرور"
+                  placeholderTextColor={"#071355"}
+                  keyboardType="default"
+                  secureTextEntry={true}
+                  onChangeText={handleChange("newPassword")}
+                  onBlur={handleBlur("newPassword")}
+                  value={values.newPassword}
+                />
+                {errors.newPassword&&touched.newPassword?<Text style={{ fontSize: 10, color: 'red' }}>{errors.newPassword}</Text>:""}
+              </View>
+              {/* confirmpassword*/}
+              <View style={styles.inputsView}>
+                <View style={styles.labelView}>
+                  <FontAwesome name="key" size={30} color="#900" />
+                  <Text style={styles.label}> تأكيد كلمه المرور</Text>
+                </View>
+                <TextInput
+                  style={styles.input}
+                  placeholder=" تأكيد كلمه المرور"
+                  placeholderTextColor={"#071355"}
+                  keyboardType="default"
+                  secureTextEntry={true}
+                  onChangeText={handleChange("passwordConfirm")}
+                  onBlur={handleBlur("passwordConfirm")}
+                  value={values.passwordConfirm}
+                />
+                {errors.passwordConfirm&&touched.passwordConfirm&&<Text style={{ fontSize: 10, color: 'red' }}>{errors.passwordConfirm}</Text>}
+              </View>
+              <Pressable onPress={handleSubmit}>
+                <Text style={styles.button} type="submit">
+                  تسجيل{" "}
+                </Text>
+              </Pressable>
+            </ScrollView>
           </View>
-          <Pressable>
-            <Text style={styles.button}>تسجيل </Text>
-          </Pressable>
-        </View>
-      </ScrollView>
+        )}
+      </Formik>
     </SafeAreaView>
   );
 }
-
-export default ResetPassword;
-
 const styles = StyleSheet.create({
-  contanier: {
+  container: {
     flex: 1,
     paddingVertical: StatusBar.currentHeight,
-    justifyContent: "center",
-    borderTopRightRadius: 30,
-    borderTopLeftRadius: 40,
+    paddingHorizontal: 15,
   },
   imageContainer: {
     justifyContent: "center",
@@ -88,11 +152,20 @@ const styles = StyleSheet.create({
     width: 300,
     height: 300,
   },
-  form: {
-    flex: 1,
-    borderTopRightRadius: 30,
-    borderTopLeftRadius: 40,
-    paddingHorizontal: 15,
+  createAcc: {
+    flexDirection: "row-reverse",
+    justifyContent: "center",
+    alignItems: "center",
+    gap: 16,
+  },
+  createAccText: {
+    fontSize: 30,
+    fontWeight: "bold",
+    color: "#071355",
+  },
+  signupIcon: {
+    width: 200,
+    height: 100,
   },
   inputsView: {
     marginTop: 40,
@@ -119,17 +192,6 @@ const styles = StyleSheet.create({
     textAlign: "right",
     marginRight: 10,
   },
-  createAcc: {
-    flexDirection: "row-reverse",
-    justifyContent: "center",
-    alignItems: "center",
-    gap: 16,
-  },
-  createAccText: {
-    fontSize: 30,
-    fontWeight: "bold",
-    color: "#071355",
-  },
   button: {
     paddingHorizontal: 30,
     paddingVertical: 10,
@@ -147,6 +209,6 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 10,
     textAlign: "center",
-    marginVertical: 40,
+    marginVertical: 20,
   },
 });

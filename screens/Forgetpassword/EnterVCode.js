@@ -10,53 +10,102 @@ import {
   StatusBar,
   Pressable,
 } from "react-native";
+import { Toast } from 'toastify-react-native'
 import { FontAwesome } from "@expo/vector-icons";
-
-// const bg= require('../../assets/signin.jpg')
-
-function EnterVCode() {
+import { Formik } from "formik";
+import * as Yup from 'yup'
+import { useState } from "react";
+function EnterEmail() {
+  const [apiMessage,setApiMessage]=useState('')
+ 
+  let formValidation=Yup.object({
+    resetCode:Yup.string().required("يرجي ادخال كود التاكيد")
+  })
+  async function emailSubmit(values) {
+    try {
+        const response = await fetch('http://192.168.1.8:8000/api/v1/auth/verifyResetCode', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              resetCode:values.resetCode,
+              // values
+            })
+        })
+        const data = await response.json();
+        console.log(data);
+        if(data.status==='error'){
+          setApiMessage(data.message)
+          Toast.error(apiMessage);
+        }else{
+          setApiMessage(data.message)
+          Toast.success(apiMessage);
+        }
+    } 
+    catch(err){
+      console.log(err)
+    }
+}
   return (
-    <SafeAreaView style={styles.contanier}>
-      {/* <Image source={bg} style={styles.Image} resizeMode="cover" /> */}
-      <ScrollView>
-        <View style={styles.imageContainer}>
-          <Image
-            source={{
-              uri: "https://img.freepik.com/free-photo/fun-3d-cartoon-illustration-indian-doctor_183364-114487.jpg?w=360&t=st=1708419125~exp=1708419725~hmac=673a911799f6fc9e5d5bde285346169af5f270a5ef675ceec33f29555b6e401e",
-            }}
-            style={styles.signupImg}
-            resizeMode="contain"
-          />
-        </View>
-
-        <View style={styles.form}>
-          <View style={styles.createAcc}>
-            <FontAwesome name="stethoscope" size={60} color="#900" />
-            <Text style={styles.createAccText}>تغيير كلمه السر</Text>
-          </View>
-          <View style={styles.inputsView}>
-            <View style={styles.labelView}>
-              <FontAwesome name="envelope" size={30} color="#900" />
-              <Text style={styles.label}> ادخل كود التاكيد</Text>
+      <SafeAreaView style={styles.contanier}>
+        
+      <Formik
+        initialValues={{
+          resetCode: "",
+        }}
+        validationSchema={formValidation}
+        onSubmit={emailSubmit}
+      >
+        {({ handleChange, handleBlur, handleSubmit, values,errors,touched}) => (
+          <View>
+          
+            <ScrollView showsVerticalScrollIndicator={false}>
+            <View style={styles.imageContainer}>
+              <Image
+                source={{
+                  uri: "https://img.freepik.com/free-photo/fun-3d-cartoon-illustration-indian-doctor_183364-114487.jpg?w=360&t=st=1708419125~exp=1708419725~hmac=673a911799f6fc9e5d5bde285346169af5f270a5ef675ceec33f29555b6e401e",
+                }}
+                style={styles.signupImg}
+                resizeMode="contain"
+              />
             </View>
-            <TextInput
-              style={styles.input}
-              placeholder=" الكود"
-              placeholderTextColor={"#071355"}
-              keyboardType="email-address"
-            />
+            {/* <View>{apiError ? <Text style={{ fontSize: 10, color: 'red' }}>{apiError}</Text> : ""}</View> */}
+              <View style={styles.createAcc}>
+                <FontAwesome name="stethoscope" size={60} color="#900" />
+                <Text style={styles.createAccText}> كود التاكيد </Text>
+              </View>
+              
+              {/* resetCode*/}
+              <View style={styles.inputsView}>
+                <View style={styles.labelView}>
+                  <FontAwesome name="envelope" size={30} color="#900" />
+                  <Text style={styles.label}>   كود التاكيد</Text>
+                </View>
+                <TextInput
+                  style={styles.input}
+                  placeholder="XXXXXX"
+                  placeholderTextColor={"#071355"}
+                  keyboardType="numeric"
+                  onChangeText={handleChange("resetCode")}
+                  onBlur={handleBlur("resetCode")}
+                  value={values.resetCode}
+                />
+                {errors.resetCode &&touched.resetCode?<Text style={{ fontSize: 10, color: 'red' }}>{errors.resetCode}</Text>:""}
+              </View>
+              <Pressable onPress={handleSubmit}>
+                 <Text style={styles.button}>تسجيل</Text>
+                </Pressable>
+            </ScrollView>
           </View>
-
-          <Pressable>
-            <Text style={styles.button}>متابعه </Text>
-          </Pressable>
-        </View>
-      </ScrollView>
+        )}
+      </Formik>
+      
     </SafeAreaView>
   );
 }
 
-export default EnterVCode;
+export default EnterEmail;
 
 const styles = StyleSheet.create({
   contanier: {

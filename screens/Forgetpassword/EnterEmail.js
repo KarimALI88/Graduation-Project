@@ -11,45 +11,103 @@ import {
   Pressable,
 } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
+import { Formik } from "formik";
+import * as Yup from 'yup'
+import { useState } from "react";
+import { Toast } from 'toastify-react-native'
 
-// const bg= require('../../assets/signin.jpg')
+
 
 function EnterEmail() {
+  const [apiMessage,setApiMessage]=useState('')
+  let formValidation=Yup.object({
+   
+    email:Yup.string().email("الخاص بك بطريقة صحيحة'gmail'يرجى ادخال ").required("الخاص بك'gmail'يرجى ادخال"),
+
+
+  })
+    
+
+  async function emailSubmit(values) {
+    try {
+        const response = await fetch('http://192.168.1.8:8000/api/v1/auth/forgotPassword', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              email:values.email,
+              // values
+            })
+        })
+        const data = await response.json();
+        console.log(data);
+        if(data.status==='success'){
+          setApiMessage(data.message)
+          Toast.success(apiMessage);
+        }else{
+          setApiMessage(data.message)
+          Toast.error(apiMessage);
+        }
+    } 
+    catch(err){
+      console.log(err)
+    }
+}
   return (
-    <SafeAreaView style={styles.contanier}>
-      {/* <Image source={bg} style={styles.Image} resizeMode="cover" /> */}
-      <View style={styles.imageContainer}>
-        <Image
-          source={{
-            uri: "https://img.freepik.com/free-photo/fun-3d-cartoon-illustration-indian-doctor_183364-114487.jpg?w=360&t=st=1708419125~exp=1708419725~hmac=673a911799f6fc9e5d5bde285346169af5f270a5ef675ceec33f29555b6e401e",
-          }}
-          style={styles.signupImg}
-          resizeMode="contain"
-        />
-      </View>
-
-      <View style={styles.form}>
-        <View style={styles.createAcc}>
-          <FontAwesome name="stethoscope" size={60} color="#900" />
-          <Text style={styles.createAccText}>تغيير كلمه السر</Text>
-        </View>
-        <View style={styles.inputsView}>
-          <View style={styles.labelView}>
-            <FontAwesome name="envelope" size={30} color="#900" />
-            <Text style={styles.label}> البريد الالكتروني</Text>
+      <SafeAreaView style={styles.contanier}>
+        
+      <Formik
+        initialValues={{
+          email: "",
+        }}
+        validationSchema={formValidation}
+        onSubmit={emailSubmit}
+      >
+        {({ handleChange, handleBlur, handleSubmit, values,errors,touched}) => (
+          <View>
+          
+            <ScrollView showsVerticalScrollIndicator={false}>
+            <View style={styles.imageContainer}>
+              <Image
+                source={{
+                  uri: "https://img.freepik.com/free-photo/fun-3d-cartoon-illustration-indian-doctor_183364-114487.jpg?w=360&t=st=1708419125~exp=1708419725~hmac=673a911799f6fc9e5d5bde285346169af5f270a5ef675ceec33f29555b6e401e",
+                }}
+                style={styles.signupImg}
+                resizeMode="contain"
+              />
+            </View>
+            {/* <View>{apiError ? <Text style={{ fontSize: 10, color: 'red' }}>{apiError}</Text> : ""}</View> */}
+              <View style={styles.createAcc}>
+                <FontAwesome name="stethoscope" size={60} color="#900" />
+                <Text style={styles.createAccText}>ادخل البريد الالكتروني</Text>
+              </View>
+              
+              {/* email*/}
+              <View style={styles.inputsView}>
+                <View style={styles.labelView}>
+                  <FontAwesome name="envelope" size={30} color="#900" />
+                  <Text style={styles.label}> البريد الالكتروني</Text>
+                </View>
+                <TextInput
+                  style={styles.input}
+                  placeholder="******@gmail.com"
+                  placeholderTextColor={"#071355"}
+                  keyboardType="email-address"
+                  onChangeText={handleChange("email")}
+                  onBlur={handleBlur("email")}
+                  value={values.email}
+                />
+                {errors.email &&touched.email?<Text style={{ fontSize: 10, color: 'red' }}>{errors.email}</Text>:""}
+              </View>
+              <Pressable onPress={handleSubmit}>
+                 <Text style={styles.button}>تسجيل</Text>
+                </Pressable>
+            </ScrollView>
           </View>
-          <TextInput
-            style={styles.input}
-            placeholder=" البريد الالكتروني"
-            placeholderTextColor={"#071355"}
-            keyboardType="email-address"
-          />
-        </View>
-
-        <Pressable>
-          <Text style={styles.button}>ارسال الكود </Text>
-        </Pressable>
-      </View>
+        )}
+      </Formik>
+      
     </SafeAreaView>
   );
 }
