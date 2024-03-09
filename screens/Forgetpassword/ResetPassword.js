@@ -10,14 +10,13 @@ import {
   Pressable,
   Button,
 } from "react-native";
-import { Toast } from 'toastify-react-native'
+import { Toast } from 'toastify-react-native' 
 import { Formik } from "formik";
 import { ScrollView } from "react-native";
-import RNPickerSelect from "react-native-picker-select";
 import { FontAwesome } from "@expo/vector-icons";
 import * as Yup from 'yup'
 
-export default function ResetPassword() {
+export default function ResetPassword({navigation}) {
   const [apiMessage,setApiMessage]=useState('')
   const JWT = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NWUxZGIzOTdmNzg3ZjliMWI3MWViNGUiLCJpYXQiOjE3MDkzMTg4MDIsImV4cCI6MTcxNzk1ODgwMn0.EkfxpObCa6FmyUmvJDFo0_mxQJZS5ZpiUOvsPfACk38"
   let formValidation=Yup.object({
@@ -28,7 +27,7 @@ export default function ResetPassword() {
 
   async function newPasswordSubmit(values) {
     try {
-        const response = await fetch('http://192.168.1.8:8000/api/v1/auth/resetPassword', {
+        const response = await fetch('http://192.168.1.7:8000/api/v1/auth/resetPassword', {
             method: 'PUT',
             headers: {
               "Content-Type": "application/json",
@@ -45,6 +44,7 @@ export default function ResetPassword() {
         if(data){
           setApiMessage(data.message)
           Toast.success(apiMessage);
+          setTimeout(()=>{navigation.navigate("SigninScreen")},3000)
         }else{
           setApiMessage(data.message)
           Toast.error(apiMessage);

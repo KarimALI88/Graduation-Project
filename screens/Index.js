@@ -9,22 +9,29 @@ import {
   StatusBar,
   Pressable,
 } from "react-native";
+import AppStack from "../AppStack";
+// import { AboutStack } from "../AppStack";
 
-function Index() {
+function Index({navigation}) {
   const logo = require("../assets/hompital-Logo.png");
   return (
     <SafeAreaView style={styles.container}>
+
       <Image style={styles.image} source={logo} resizeMode="contain" />
       <Text style={styles.title}>Hompital</Text>
       <Text style={styles.text}>
         دلوقتي تقدر تعرف فين اقرب مستشفي بتعالج حالتك من بيتك وكمان بنساعد المسعفين
         فانهم يوفروا وقت ويروحوا القرب مستشفي متاحه ومتاح فيها مكان
       </Text>
-      <Pressable>
+      <Pressable onPress={() => {
+          navigation.navigate("SigninScreen");
+        }}>
         <Text style={styles.button}>تسجيل الدخول</Text>
       </Pressable>
     </SafeAreaView>
+
   );
+  
 }
 
 export default Index;

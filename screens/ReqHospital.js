@@ -36,7 +36,7 @@ export default function ReqHospital() {
   const [loading, setLoading] = useState(false);
   const [hospitals, setHospitals] = useState({});
   const [refreshing, setRefreshing] = useState(false);
-  const url = "http://192.168.1.3:8000/api/v1/select";
+  const url = "http://192.168.1.7:8000/api/v1/select";
   const JWT =
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NWNiYmI3MzBmMzBlOWY5MDhkM2MxNWQiLCJpYXQiOjE3MDk0OTI2NTcsImV4cCI6MTcxODEzMjY1N30.Q96G9xHJMwiH9-zjLHwdFkPrBwgAN9HN3fMHlkNW57k";
   const headers = {

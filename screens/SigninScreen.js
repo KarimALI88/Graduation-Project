@@ -17,7 +17,7 @@ import { Toast } from "toastify-react-native";
 
 // const bg = require("../assets/signin.jpg");
 
-function SigninScreen() {
+function SigninScreen({navigation}) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [successMessage, setSuccessMessage] = useState(null);
@@ -66,8 +66,13 @@ function SigninScreen() {
           await AsyncStorage.setItem("JWT", data.token);
 
           // Display the success toast message after the state has been updated
-          Toast.success(successMessage);
+          
+          
+           Toast.success(successMessage)
+
+  
           setErrorMessage(null);
+          setTimeout(()=>{navigation.navigate("ReqHospital")},3000)
         } else {
           // Set the error message
           setErrorMessage(data.message);
@@ -140,10 +145,22 @@ function SigninScreen() {
             ) : null}
           </View>
           <View style={styles.quesContainer}>
-            <Text style={styles.signupLink}>هل نسيت كلمة المرور؟</Text>
-            <Text style={styles.forgetPass}>
-              اذا لم يكن لديك حساب قم بالتسجيل.
-            </Text>
+            <Pressable
+              onPress={() => {
+                navigation.navigate("EnterEmail");
+              }}
+            >
+              <Text style={styles.signupLink}>هل نسيت كلمة المرور؟</Text>
+            </Pressable>
+            <Pressable
+              onPress={() => {
+                navigation.navigate("Signup");
+              }}
+            >
+              <Text style={styles.forgetPass}>
+                اذا لم يكن لديك حساب قم بالتسجيل.
+              </Text>
+            </Pressable>
           </View>
           <Pressable onPress={handleSubmit}>
             <Text style={styles.button}>تسجيل </Text>

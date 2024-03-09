@@ -18,7 +18,7 @@ import { Toast } from 'toastify-react-native'
 
 
 
-function EnterEmail() {
+function EnterEmail({navigation}) {
   const [apiMessage,setApiMessage]=useState('')
   let formValidation=Yup.object({
    
@@ -30,7 +30,7 @@ function EnterEmail() {
 
   async function emailSubmit(values) {
     try {
-        const response = await fetch('http://192.168.1.8:8000/api/v1/auth/forgotPassword', {
+        const response = await fetch('http://192.168.1.7:8000/api/v1/auth/forgotPassword', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -45,6 +45,7 @@ function EnterEmail() {
         if(data.status==='success'){
           setApiMessage(data.message)
           Toast.success(apiMessage);
+          setTimeout(()=>{navigation.navigate("EnterVCode")},3000)
         }else{
           setApiMessage(data.message)
           Toast.error(apiMessage);

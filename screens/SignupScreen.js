@@ -18,7 +18,7 @@ import { FontAwesome } from "@expo/vector-icons";
 import * as Yup from 'yup'
 const signupImage = require("../assets/signup-img.png");
 
-export default function Signup() {
+export default function Signup({navigation}) {
   let [apiMessage,setApiMessage]=useState('')
   let formValidation=Yup.object({
     userName:Yup.string().min(3,"اسم المستخدم ثلاثة حروف او اكتر").max(10,'اسم المستخدم اقل من 10 حروف').required("يرجى ادخال اسم المستخدم"),
@@ -35,7 +35,7 @@ export default function Signup() {
 
   async function registerSubmit(values) {
     try {
-        const response = await fetch('http://192.168.1.8:8000/api/v1/auth/signup', {
+        const response = await fetch('http://192.168.1.7:8000/api/v1/auth/signup', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -58,6 +58,7 @@ export default function Signup() {
         }else{
           // setApiMessage(data.message)
           Toast.success("تم انشاء حساب ");
+          setTimeout(()=>{navigation.navigate("SigninScreen")},3000)
         }
     } 
     catch(err){

@@ -15,7 +15,7 @@ import { FontAwesome } from "@expo/vector-icons";
 import { Formik } from "formik";
 import * as Yup from 'yup'
 import { useState } from "react";
-function EnterEmail() {
+function EnterVCode({navigation}) {
   const [apiMessage,setApiMessage]=useState('')
  
   let formValidation=Yup.object({
@@ -23,7 +23,7 @@ function EnterEmail() {
   })
   async function emailSubmit(values) {
     try {
-        const response = await fetch('http://192.168.1.8:8000/api/v1/auth/verifyResetCode', {
+        const response = await fetch('http://192.168.1.7:8000/api/v1/auth/verifyResetCode', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -38,9 +38,12 @@ function EnterEmail() {
         if(data.status==='error'){
           setApiMessage(data.message)
           Toast.error(apiMessage);
+          
+
         }else{
           setApiMessage(data.message)
           Toast.success(apiMessage);
+          setTimeout(()=>{navigation.navigate("ResetPassword")},3000)
         }
     } 
     catch(err){
@@ -105,7 +108,7 @@ function EnterEmail() {
   );
 }
 
-export default EnterEmail;
+export default EnterVCode;
 
 const styles = StyleSheet.create({
   contanier: {

@@ -1,36 +1,67 @@
-import { StyleSheet, Text, View } from 'react-native';
-import Index from './screens/Index';
-import Signup from './screens/SignupScreen';
-import ReqHospital from './screens/ReqHospital';
-import SigninScreen from './screens/SigninScreen';
+// App.js
+import React from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import Ionicons from '@expo/vector-icons/Ionicons';
 import Profile from './screens/Profile';
-import EnterEmail from './screens/Forgetpassword/EnterEmail';
-import ToastManager from 'toastify-react-native'
+import ReqHospital from './screens/ReqHospital';
+import Index from './screens/Index';
+import AppStack from './AppStack';
 
-import ResetPassword from './screens/Forgetpassword/ResetPassword';
-import EnterVCode from './screens/Forgetpassword/EnterVCode';
+const Tab = createBottomTabNavigator();
 
-
-export default function App() {
+const App = () => {
   return (
-    <View style={styles.container}>
-      {/* <Index/> */}
-      {/* <Signup/> */}
-      {/* <ReqHospital/>  */}
-      {/* <SigninScreen/>  */}
-      <Profile/>
-      {/* <EnterEmail/> */}
-      {/* <EnterVCode/> */}
-      {/* <ResetPassword/> */}
-      {/* <EnterEmail/> */}
-      <ToastManager/>
-    </View>
+    <NavigationContainer>
+      <Tab.Navigator
+        screenOptions={{
+          tabBarLabelPosition: 'below-icon',
+          tabBarActiveTintColor: 'white',
+          tabBarStyle: { backgroundColor: '#071355' },
+          tabBarLabelStyle: { fontSize: 14 },
+        }}>
+        <Tab.Screen
+          name="Profile"
+          component={Profile}
+          options={{
+            tabBarLabel: 'الصفحه الشخصيه',
+            tabBarIcon: ({ color }) => (
+              <Ionicons name={'person'} size={30} color={color} />
+            ),
+          }}
+        />
+        <Tab.Screen
+          name="ReqHospital"
+          component={ReqHospital}
+          options={{
+            tabBarLabel: 'طلب مستشفي',
+            tabBarIcon: ({ color }) => (
+              <Ionicons name={'add'} size={30} color={color} />
+            ),
+          }}
+        />
+        <Tab.Screen
+          name="Index"
+          component={AppStack}
+          options={{
+            tabBarLabel: 'الرئيسيه',
+            tabBarIcon: ({ color }) => (
+              <Ionicons name={'heart'} size={30} color={color} />
+            ),
+          }}
+        />
+        {/* <Tab.Screen
+          name="About Stack"
+          component={AppStack}
+          options={{
+            tabBarLabel: 'About',
+            tabBarVisible: false,
+          }}
+        /> */}
+      </Tab.Navigator>
+      {/* <AppStack/>  */}
+</NavigationContainer>
   );
-}
+};
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-  },
-});
+export default App;

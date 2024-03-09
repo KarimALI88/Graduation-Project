@@ -13,7 +13,9 @@ import { AntDesign } from "@expo/vector-icons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { FontAwesome } from "@expo/vector-icons";
 import { Image } from "react-native";
-export default function RespHosp({ hospitals, visible }) {
+import { useNavigation } from "@react-navigation/native";
+export default function RespHosp({ hospitals, visible}) {
+  const navigation =useNavigation()
   const hospImg = require("../assets/hospital-icon.png");
 
   const handleLocationPress = (link) => {
@@ -28,6 +30,9 @@ export default function RespHosp({ hospitals, visible }) {
         presentationStyle="pageSheet"
         onRequestClose={() => (visible = true)}
       >
+        <Pressable onPress={() => {
+                navigation.navigate("ReqHospital");
+              }}><AntDesign name="closecircle" size={24} color="black" /></Pressable>
         <FlatList
           data={hospitals.list1} // Assuming "hospitals" is the response data
           renderItem={({ item }) => (
