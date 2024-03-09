@@ -6,17 +6,207 @@ import {
   StyleSheet,
   StatusBar,
   ScrollView,
+  Pressable,
 } from "react-native";
-
 import { FontAwesome } from "@expo/vector-icons";
-const image = require("../assets/women.png");
+import { AntDesign } from "@expo/vector-icons";
+import { Feather } from "@expo/vector-icons";
+import { useState } from "react";
+import { useEffect } from "react";
+import { Toast } from "toastify-react-native";
+
+const manImage = require("../assets/man.png");
+const womenImage = require("../assets/women.png");
 
 function Profile() {
+  const [user, setUser] = useState({});
+  const [editEmail, setEditEmail] = useState(false);
+  const [editUserName, setEditUserName] = useState(false);
+  const [phone, setPhone] = useState(false);
+  const [age, setAge] = useState(false);
+  const [editPassword, setEditPassword] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+  const [password, setPassword] = useState({
+    currentPassword: "",
+    updatedPassword: "",
+    passwordConfirm: "",
+  });
+
+  const url = "http://192.168.1.8:8000/api/v1/users/getMe";
+  const url2 = "http://192.168.1.8:8000/api/v1/users/updateMe";
+  const url3 = "http://192.168.1.8:8000/api/v1/users/chamgeMyPassword";
+  const JWT =
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NWNiYmI3MzBmMzBlOWY5MDhkM2MxNWQiLCJpYXQiOjE3MDk1ODE1NDcsImV4cCI6MTcxODIyMTU0N30.zszPP723QEKMmT5Rer0yGkKYQiSyHjONW_uE2heCgjs";
+  const headers = {
+    "Content-Type": "application/json",
+    Authorization: "Bearer " + JWT,
+  };
+
+  const body = JSON.stringify({
+    user,
+  });
+  const passBody = JSON.stringify({
+    password,
+  });
+  const options1 = {
+    method: "GET",
+    headers: headers,
+    // body: body,
+  };
+  const options2 = {
+    method: "PUT",
+    headers: headers,
+    body: body,
+  };
+  const options3 = {
+    method: "PUT",
+    headers: headers,
+    body: passBody,
+  };
+
+  const getUser = async (e) => {
+    // e.preventDefault(); // Prevent default form submission behavior
+
+    try {
+      const response = await fetch(url, options1);
+      const data = await response.json();
+
+      if (data) {
+        console.log(" successful");
+        console.log(data);
+        setUser(data.data);
+      } else {
+        console.log("No token received");
+        console.log(data.message);
+      }
+    } catch (error) {
+      console.error("Error during login:", error);
+    }
+  };
+  useEffect(() => {
+    getUser();
+  }, []);
+
+  const updateUser = async (field) => {
+    try {
+      const response = await fetch(url2, {
+        method: "PUT",
+        headers: headers,
+        body: JSON.stringify({
+          [field]: user[field], // Send only the updated field
+        }),
+      });
+
+      const data = await response.json();
+
+      if (data.id) {
+        console.log("Update successful");
+        console.log(data);
+        setSuccessMessage("تم التحديث بنجاح")
+        Toast.success(successMessage);
+      } else {
+        console.log("Update failed");
+        console.log(data.errors[0].msg);
+        setErrorMessage(data.errors[0].msg)
+        Toast.error(errorMessage);
+      }
+    } catch (error) {
+      console.error("Error during update:", error);
+    }
+  };
+  const updatePass = async () => {
+    try {
+      const response = await fetch(url3, {
+        method: "PUT",
+        headers: headers,
+        body: JSON.stringify({
+          currentPassword: password.currentPassword,
+          updatedPassword: password.updatedPassword,
+          passwordConfirm: password.passwordConfirm,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (data) {
+        console.log("Update successful");
+        console.log(data);
+      } else {
+        console.log("Update failed");
+        console.log(data.message);
+      }
+    } catch (error) {
+      console.error("Error during update:", error);
+    }
+  };
+
+  const changeValue = (field) => {
+    switch (field) {
+      case "email":
+        setEditEmail(true);
+        break;
+      case "userName":
+        setEditUserName(true);
+        break;
+      case "phone":
+        setPhone(true);
+        break;
+      case "age":
+        setAge(true);
+        break;
+      case "password":
+        setEditPassword(true);
+        break;
+      default:
+        break;
+    }
+  };
+
+  const saveChange = async (field) => {
+    switch (field) {
+      case "email":
+        setEditEmail(false);
+        await updateUser("email");
+        break;
+      case "userName":
+        setEditUserName(false);
+        await updateUser("userName");
+        break;
+      case "phone":
+        setPhone(false);
+        await updateUser("phone");
+        break;
+      case "age":
+        setAge(false);
+        await updateUser("age");
+        break;
+      case "password":
+        setEditPassword(false);
+        await updatePass();
+        break;
+      default:
+        break;
+    }
+  };
+
   return (
     <View style={styles.container}>
       <ScrollView>
         <View style={styles.profileImgContainer}>
-          <Image source={image} style={styles.profileImg} resizeMode="contain" />
+          {user.gender === "male" ? (
+            <Image
+              source={manImage}
+              style={styles.profileImg}
+              resizeMode="contain"
+            />
+          ) : (
+            <Image
+              source={womenImage}
+              style={styles.profileImg}
+              resizeMode="contain"
+            />
+          )}
         </View>
         {/* {emial} */}
         <View style={styles.inputsView}>
@@ -25,49 +215,175 @@ function Profile() {
               <FontAwesome name="envelope" size={30} color="#900" />
               <Text style={styles.label}> البريد الالكتروني</Text>
             </View>
-            <FontAwesome name="pencil" size={30} style={styles.icon} />
+            {editEmail ? (
+              <Pressable onPress={() => saveChange("email")}>
+                <AntDesign name="checkcircle" size={30} color="black" />
+              </Pressable>
+            ) : (
+              <Pressable onPress={() => changeValue("email")}>
+                <FontAwesome name="pencil" size={30} style={styles.icon} />
+              </Pressable>
+            )}
           </View>
-          <Text style={styles.value}>dm383960@gmail.com</Text>
-          {/* <TextInput
-            style={styles.input}
-            placeholder=" البريد الالكتروني"
-            placeholderTextColor={"#071355"}
-            keyboardType="email-address"
-          /> */}
+          {!editEmail ? (
+            <Text style={styles.value}>{user.email}</Text>
+          ) : (
+            <TextInput
+              style={styles.input}
+              placeholder=" البريد الالكتروني"
+              placeholderTextColor={"#071355"}
+              keyboardType="email-address"
+              value={user.email}
+              onChangeText={(text) => setUser({ ...user, email: text })}
+            />
+          )}
         </View>
         {/* {name} */}
         <View style={styles.inputsView}>
           <View style={styles.labelView}>
             <View style={styles.title}>
-              <FontAwesome name="envelope" size={30} color="#900" />
+              <FontAwesome name="user" size={30} color="#900" />
               <Text style={styles.label}> الاسم </Text>
             </View>
-            <FontAwesome name="pencil" size={30} style={styles.icon} />
+            {editUserName ? (
+              <Pressable onPress={() => saveChange("userName")}>
+                <AntDesign name="checkcircle" size={30} color="black" />
+              </Pressable>
+            ) : (
+              <Pressable onPress={() => changeValue("userName")}>
+                <FontAwesome name="pencil" size={30} style={styles.icon} />
+              </Pressable>
+            )}
           </View>
-          <Text style={styles.value}>ضحى محمد رمضان</Text>
-          {/* <TextInput
-            style={styles.input}
-            placeholder=" البريد الالكتروني"
-            placeholderTextColor={"#071355"}
-            keyboardType="email-address"
-          /> */}
+          {!editUserName ? (
+            <Text style={styles.value}>{user.userName}</Text>
+          ) : (
+            <TextInput
+              style={styles.input}
+              placeholder=" اسم المستخدم"
+              placeholderTextColor={"#071355"}
+              keyboardType="default"
+              value={user.userName}
+              onChangeText={(text) => setUser({ ...user, userName: text })}
+            />
+          )}
+        </View>
+        {/* {phone} */}
+        <View style={styles.inputsView}>
+          <View style={styles.labelView}>
+            <View style={styles.title}>
+              <Feather name="phone" size={30} color="#900" />
+              <Text style={styles.label}> الهاتف </Text>
+            </View>
+            {phone ? (
+              <Pressable onPress={() => saveChange("phone")}>
+                <AntDesign name="checkcircle" size={30} color="black" />
+              </Pressable>
+            ) : (
+              <Pressable onPress={() => changeValue("phone")}>
+                <FontAwesome name="pencil" size={30} style={styles.icon} />
+              </Pressable>
+            )}
+          </View>
+          {!phone ? (
+            <Text style={styles.value}>{user.phone}</Text>
+          ) : (
+            <TextInput
+              style={styles.input}
+              placeholder="الهاتف"
+              placeholderTextColor={"#071355"}
+              keyboardType="phone-pad"
+              value={user.phone}
+              onChangeText={(text) => setUser({ ...user, phone: text })}
+            />
+          )}
+        </View>
+        {/* {age} */}
+        <View style={styles.inputsView}>
+          <View style={styles.labelView}>
+            <View style={styles.title}>
+              <AntDesign name="idcard" size={30} color="#900" />
+              <Text style={styles.label}> العمر </Text>
+            </View>
+            {age ? (
+              <Pressable onPress={() => saveChange("age")}>
+                <AntDesign name="checkcircle" size={30} color="black" />
+              </Pressable>
+            ) : (
+              <Pressable onPress={() => changeValue("age")}>
+                <FontAwesome name="pencil" size={30} style={styles.icon} />
+              </Pressable>
+            )}
+          </View>
+          {!age ? (
+            <Text style={styles.value}>{user.age}</Text>
+          ) : (
+            <TextInput
+              style={styles.input}
+              placeholder="العمر"
+              placeholderTextColor={"#071355"}
+              keyboardType="numeric"
+              value={user.age}
+              onChangeText={(text) => setUser({ ...user, age: text })}
+            />
+          )}
         </View>
         {/* {password} */}
         <View style={styles.inputsView}>
           <View style={styles.labelView}>
             <View style={styles.title}>
-              <FontAwesome name="envelope" size={30} color="#900" />
+              <FontAwesome name="key" size={30} color="#900" />
               <Text style={styles.label}> كلمه السر </Text>
             </View>
-            <FontAwesome name="pencil" size={30} style={styles.icon} />
+            {editPassword ? (
+              <Pressable onPress={() => saveChange("password")}>
+                <AntDesign name="checkcircle" size={30} color="black" />
+              </Pressable>
+            ) : (
+              <Pressable onPress={() => changeValue("password")}>
+                <FontAwesome name="pencil" size={30} style={styles.icon} />
+              </Pressable>
+            )}
           </View>
-          <Text style={styles.value}>*********</Text>
-          {/* <TextInput
-            style={styles.input}
-            placeholder=" البريد الالكتروني"
-            placeholderTextColor={"#071355"}
-            keyboardType="email-address"
-          /> */}
+          {!editPassword ? (
+            <Text style={styles.value}>*</Text>
+          ) : (
+            <View>
+              <TextInput
+                style={styles.input}
+                placeholder="كلمة المرور الحالية"
+                placeholderTextColor={"#071355"}
+                keyboardType="default"
+                secureTextEntry={true}
+                value={password.currentPassword}
+                onChangeText={(text) =>
+                  setPassword({ ...password, currentPassword: text })
+                }
+              />
+              <TextInput
+                style={styles.input}
+                placeholder=" كلمة المرور الجديده"
+                placeholderTextColor={"#071355"}
+                keyboardType="default"
+                secureTextEntry={true}
+                value={password.updatedPassword}
+                onChangeText={(text) =>
+                  setPassword({ ...password, updatedPassword: text })
+                }
+              />
+              <TextInput
+                style={styles.input}
+                placeholder=" تاكيد كلمة المرور الجديده"
+                placeholderTextColor={"#071355"}
+                keyboardType="default"
+                secureTextEntry={true}
+                value={password.passwordConfirm}
+                onChangeText={(text) =>
+                  setPassword({ ...password, passwordConfirm: text })
+                }
+              />
+            </View>
+          )}
         </View>
       </ScrollView>
     </View>
@@ -80,6 +396,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingVertical: StatusBar.currentHeight,
+    backgroundColor: "#f5f5f5",
   },
   profileImgContainer: {
     justifyContent: "center",
@@ -91,7 +408,20 @@ const styles = StyleSheet.create({
     height: 300,
   },
   inputsView: {
-    marginTop: 40,
+    backgroundColor: "white",
+    marginVertical: 20,
+    marginHorizontal: 10,
+    paddingHorizontal: 10,
+    borderRadius: 20,
+    paddingVertical: 20,
+    shadowColor: "black",
+    shadowOffset: {
+      width: 6,
+      height: 6,
+    },
+    shadowOpacity: 0.9,
+    shadowRadius: 4,
+    elevation: 13,
   },
   input: {
     borderBottomColor: "#071355",
@@ -109,6 +439,7 @@ const styles = StyleSheet.create({
     alignItems: "center", // Align the items in the center
     paddingHorizontal: 20,
     justifyContent: "space-between",
+    marginBottom: 20,
   },
   label: {
     color: "#071355",

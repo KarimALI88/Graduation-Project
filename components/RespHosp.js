@@ -6,12 +6,12 @@ import {
   Button,
   FlatList,
   Pressable,
-  Linking
+  Linking,
 } from "react-native";
 import { Entypo } from "@expo/vector-icons";
-import { AntDesign } from '@expo/vector-icons';
+import { AntDesign } from "@expo/vector-icons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { FontAwesome } from '@expo/vector-icons';
+import { FontAwesome } from "@expo/vector-icons";
 import { Image } from "react-native";
 export default function RespHosp({ hospitals, visible }) {
   const hospImg = require("../assets/hospital-icon.png");
@@ -19,58 +19,101 @@ export default function RespHosp({ hospitals, visible }) {
   const handleLocationPress = (link) => {
     Linking.openURL(link);
   };
- console.log(hospitals);
+  console.log(hospitals);
   return (
     <View style={styles.container}>
       <Modal
         visible={visible}
         animationType="slide"
         presentationStyle="pageSheet"
-        onRequestClose={()=>visible=true}
+        onRequestClose={() => (visible = true)}
       >
-       <FlatList
-  data={hospitals.list1} // Assuming "hospitals" is the response data
-  renderItem={({ item }) => (
-    <View key={item.hospital_name} style={styles.card}>
-      <View style={styles.titleContainer}>
-        <Text style={styles.titleText}>{item.hospital_name}</Text>
-        <Image source={hospImg} style={{ width: 80, height: 80 }} />
-      </View>
-      <View style={styles.subTitle}>
-        <Text style={styles.cardText}>
-          التلفون: {item.phone}
-        </Text>
-        <AntDesign name="phone" size={30} color="white" />
-      </View>
-      <View style={styles.subTitle}>
-        <Text style={styles.cardText}>
-        القطاع: {item.type}
-        </Text>
-        <FontAwesome name="money" size={30} color="white" />
-      </View>
-      <View style={styles.subTitle}>
-        <Pressable onPress={() => handleLocationPress(item.address)}>
-          <Text style={[styles.cardText, { color: "#0f81f0" }]}>
-            الموقع
-          </Text>
-        </Pressable>
-        <Entypo name="location-pin" size={30} color="white" />
-      </View>
-    </View>
-  )}
-  keyExtractor={(item) => item.hospital_name}
-  ItemSeparatorComponent={() => <View style={{ height: 16 }}></View>}
-  ListEmptyComponent={<Text>No Items found</Text>}
-  ListHeaderComponent={
-    <Text style={styles.headerText}>
-      المستشفيات المتاحة والقريبة من موقعك الآن :{" "}
-    </Text>
-  }
-  ListFooterComponent={
-    <Text style={styles.footerText}>مع التمنيات بالسلامة</Text>
-  }
-/>
-
+        <FlatList
+          data={hospitals.list1} // Assuming "hospitals" is the response data
+          renderItem={({ item }) => (
+            <View key={item.hospital_name} style={styles.card}>
+              <View style={styles.titleContainer}>
+                <Text style={styles.titleText}>{item.hospital_name}</Text>
+                <Image source={hospImg} style={{ width: 80, height: 80 }} />
+              </View>
+              <View style={styles.subTitle}>
+                <Text style={styles.cardText}>التلفون: {item.phone}</Text>
+                <AntDesign name="phone" size={30} color="white" />
+              </View>
+              <View style={styles.subTitle}>
+                <Text style={styles.cardText}>القطاع: {item.type}</Text>
+                <FontAwesome name="money" size={30} color="white" />
+              </View>
+              <View style={styles.subTitle}>
+                <Pressable onPress={() => handleLocationPress(item.address)}>
+                  <Text style={[styles.cardText, { color: "#0f81f0" }]}>
+                    الموقع
+                  </Text>
+                </Pressable>
+                <Entypo name="location-pin" size={30} color="white" />
+              </View>
+            </View>
+          )}
+          keyExtractor={(item) => item.hospital_name}
+          ItemSeparatorComponent={() => <View style={{ height: 16 }}></View>}
+          ListEmptyComponent={<Text>No Items found</Text>}
+          ListHeaderComponent={
+            <Text style={styles.headerText}>
+              المستشفيات المتاحة والقريبة من موقعك الآن :{" "}
+            </Text>
+          }
+          ListFooterComponent={
+            // <Text style={styles.footerText}>مع التمنيات بالسلامة</Text>
+            <FlatList
+              data={hospitals.list2} // Assuming "hospitals" is the response data
+              renderItem={({ item }) => (
+                <View key={item.hospital_name} style={styles.card}>
+                  <View style={styles.titleContainer}>
+                    <Text style={styles.titleText}>{item.hospital_name}</Text>
+                    <Image source={hospImg} style={{ width: 80, height: 80 }} />
+                  </View>
+                  <View style={styles.subTitle}>
+                    <Text style={styles.cardText}>التلفون: {item.phone}</Text>
+                    <AntDesign name="phone" size={30} color="white" />
+                  </View>
+                  <View style={styles.subTitle}>
+                    <Text style={styles.cardText}>القطاع: {item.type}</Text>
+                    <FontAwesome name="money" size={30} color="white" />
+                  </View>
+                  <View style={styles.subTitle}>
+                    <Text style={styles.cardText}>
+                      سوف تكون متاحة خلال: {item.availabilityTime}
+                    </Text>
+                    <Entypo name="time-slot" size={30} color="white" />
+                  </View>
+                  <View style={styles.subTitle}>
+                    <Pressable
+                      onPress={() => handleLocationPress(item.address)}
+                    >
+                      <Text style={[styles.cardText, { color: "#0f81f0" }]}>
+                        الموقع
+                      </Text>
+                    </Pressable>
+                    <Entypo name="location-pin" size={30} color="white" />
+                  </View>
+                </View>
+              )}
+              keyExtractor={(item) => item.hospital_name}
+              ItemSeparatorComponent={() => (
+                <View style={{ height: 16 }}></View>
+              )}
+              ListEmptyComponent={<Text>No Items found</Text>}
+              ListHeaderComponent={
+                <Text style={styles.headerText}>
+                  مستشقيات سوف تكون متاحة قريبا :{" "}
+                </Text>
+              }
+              ListFooterComponent={
+                <Text style={styles.footerText}>مع التمنيات بالسلامة</Text>
+              }
+            />
+          }
+        />
       </Modal>
     </View>
   );
@@ -97,8 +140,8 @@ const styles = StyleSheet.create({
   card: {
     backgroundColor: "#071355",
     color: "white",
-    paddingHorizontal:10,
-    paddingVertical:10,
+    paddingHorizontal: 10,
+    paddingVertical: 10,
     borderRadius: 8,
     borderWidth: 1,
     marginHorizontal: 16,
@@ -110,7 +153,7 @@ const styles = StyleSheet.create({
     fontSize: 30,
     fontWeight: "600",
     color: "white",
-    width:250,
+    width: 220,
   },
   cardText: {
     color: "#B2BEB5",

@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View } from 'react-native';
-// import Index from './screens/Index';
+import Index from './screens/Index';
 import Signup from './screens/SignupScreen';
 import ReqHospital from './screens/ReqHospital';
 import SigninScreen from './screens/SigninScreen';
@@ -18,25 +18,11 @@ export default function App() {
       {/* <Signup/> */}
       {/* <ReqHospital/>  */}
       {/* <SigninScreen/>  */}
-      {/* <Profile/> */}
+      <Profile/>
       {/* <EnterEmail/> */}
       {/* <EnterVCode/> */}
-      <ResetPassword/>
+      {/* <ResetPassword/> */}
       {/* <EnterEmail/> */}
-      {/* <NavigationContainer>
-        <Stack.Navigator initialRouteName="EnterEmail">
-          <Stack.Screen
-            name="EnterEmail"
-            component={EnterEmail}
-            options={{ headerShown: false }}
-          />
-          <Stack.Screen
-            name="EnterVCode"
-            component={EnterVCode}
-            options={{ headerShown: false }} 
-          />
-        </Stack.Navigator>
-      </NavigationContainer> */}
       <ToastManager/>
     </View>
   );
@@ -46,6 +32,5 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    
   },
 });

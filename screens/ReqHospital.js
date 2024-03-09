@@ -8,6 +8,8 @@ import {
   Modal,
   StyleSheet,
   Pressable,
+  ActivityIndicator,
+  RefreshControl 
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import { FontAwesome } from "@expo/vector-icons";
@@ -20,17 +22,21 @@ import { Entypo } from "@expo/vector-icons";
 
 const reqHospImg = require("../assets/hospital-form.png");
 
-
 export default function ReqHospital() {
-  const [location, setLocation] = useState(null);
+  const [location, setLocation] = useState({
+    coords: {
+      latitude: 30.158392910140286,
+      longitude: 31.62863789393309,
+    },
+  });
   const [disease, setDisease] = useState(null);
   const [section, setSection] = useState(null);
   const [reqLocation, setReqLocation] = useState(false);
   const [visible, setVisible] = useState(false);
-  const [hospitals, setHospitals] =useState({});
-
-
-  const url = "http://192.168.1.8:8000/api/v1/select";
+  const [loading, setLoading] = useState(false);
+  const [hospitals, setHospitals] = useState({});
+  const [refreshing, setRefreshing] = useState(false);
+  const url = "http://192.168.1.3:8000/api/v1/select";
   const JWT =
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NWNiYmI3MzBmMzBlOWY5MDhkM2MxNWQiLCJpYXQiOjE3MDk0OTI2NTcsImV4cCI6MTcxODEzMjY1N30.Q96G9xHJMwiH9-zjLHwdFkPrBwgAN9HN3fMHlkNW57k";
   const headers = {
@@ -38,15 +44,13 @@ export default function ReqHospital() {
     Authorization: "Bearer " + JWT,
   };
 
-
   const body = JSON.stringify({
-    section :section,
+    section: section,
     case: disease,
-    // latitude :location.coords.latitude,
-    // longitude :location.coords.longitude,
-    latitude:"30.158392910140286",
-    longitude:"31.62863789393309"
-
+    latitude: location.latitude,
+    longitude: location.longitude,
+    // latitude:"30.158392910140286",
+    // longitude:"31.62863789393309"
   });
 
   const options = {
@@ -59,6 +63,7 @@ export default function ReqHospital() {
     // e.preventDefault(); // Prevent default form submission behavior
 
     try {
+      await setLoading(true);
       const response = await fetch(url, options);
       const data = await response.json();
 
@@ -67,8 +72,8 @@ export default function ReqHospital() {
         // console.log(data);
         setHospitals(data);
         setVisible(true);
+
         // setUser(data.data);
-        
       } else {
         console.log("No token received");
         console.log(data);
@@ -80,6 +85,16 @@ export default function ReqHospital() {
     }
   };
 
+  const onRefresh = () => {
+    setRefreshing(true);
+    setReqLocation(false)
+    // Perform your refresh logic here, such as fetching new data from an API
+
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 2000); // Simulate a delay of 2 seconds
+  };
+
   useEffect(() => {
     if (reqLocation) {
       (async () => {
@@ -88,9 +103,18 @@ export default function ReqHospital() {
           console.log("Permission to access location was denied");
           return;
         }
-        let location = await Location.getCurrentPositionAsync({});
-        setLocation(location);
-        console.log(location);
+        try {
+          let location = await Location.getCurrentPositionAsync({});
+          setLocation({
+            coords: {
+              latitude: location.coords.latitude,
+              longitude: location.coords.longitude,
+            },
+          });
+          console.log(location);
+        } catch (error) {
+          console.log("Error getting current position:", error);
+        }
       })();
     } else {
       console.log("false");
@@ -100,7 +124,20 @@ export default function ReqHospital() {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar />
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            colors={["#ff0000", "#00ff00", "#0000ff"]}
+            tintColor="white"
+            title="Loading..."
+            titleColor="white"
+            progressBackgroundColor="gray"
+          />
+        }
+      >
         <View style={styles.imageContainer}>
           <Image source={reqHospImg} style={styles.hospImg} />
         </View>
@@ -233,9 +270,18 @@ export default function ReqHospital() {
           </View>
 
           {/* submit button */}
-          <Pressable onPress={getHospitals}>
-            <Text style={styles.button}>طلب</Text>
-          </Pressable>
+          {loading ? (
+            <ActivityIndicator
+              animating={true}
+              color="white"
+              size={100}
+              style={{ marginVertical: 20 }}
+            />
+          ) : (
+            <Pressable onPress={getHospitals}>
+              <Text style={styles.button}>طلب</Text>
+            </Pressable>
+          )}
         </View>
 
         <RespHosp hospitals={hospitals} visible={visible} />

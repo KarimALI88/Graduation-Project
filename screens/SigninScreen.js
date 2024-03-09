@@ -11,21 +11,87 @@ import {
   Pressable,
 } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useState } from "react";
+import { Toast } from "toastify-react-native";
 
 // const bg = require("../assets/signin.jpg");
 
 function SigninScreen() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [successMessage, setSuccessMessage] = useState(null);
+  const [errorMessage, setErrorMessage] = useState(null);
+  const [errors, setErrors] = useState({});
+
+  const validateForm = () => {
+    let errors = {};
+
+    if (!email) errors.email = "يرجي ادخال ايميل";
+    if (!password) errors.password = "يرجي ادخال كلمة المرور";
+
+    setErrors(errors);
+
+    return Object.keys(errors).length === 0;
+  };
+  const url = "http://192.168.1.7:8000/api/v1/auth/login";
+  const headers = {
+    "Content-Type": "application/json",
+    Authorization: "Bearer " + AsyncStorage.getItem("JWT"),
+  };
+  const body = JSON.stringify({
+    email: email,
+    password: password,
+  });
+  const options = {
+    method: "POST",
+    headers: headers,
+    body: body,
+  };
+
+  const handleSubmit = async (e) => {
+    // Prevent default form submission behavior
+    e.preventDefault();
+
+    if (validateForm()) {
+      try {
+        const response = await fetch(url, options);
+        const data = await response.json();
+
+        if (data.token) {
+          // Set the success message first
+          setSuccessMessage("تم تسجيل الدخول");
+
+          // Update AsyncStorage with the token
+          await AsyncStorage.setItem("JWT", data.token);
+
+          // Display the success toast message after the state has been updated
+          Toast.success(successMessage);
+          setErrorMessage(null);
+        } else {
+          // Set the error message
+          setErrorMessage(data.message);
+          Toast.error(errorMessage);
+          setSuccessMessage(null);
+        }
+      } catch (error) {
+        console.error("Error during login:", error);
+      }
+    }
+  };
+
   return (
     <SafeAreaView style={styles.contanier}>
       {/* <Image source={bg} style={styles.Image} resizeMode="cover" /> */}
+      <StatusBar backgroundColor="#3447b2" />
       <ScrollView>
         <View style={styles.imageContainer}>
           <Image
             source={{
-              uri: "https://img.freepik.com/free-photo/fun-3d-cartoon-illustration-indian-doctor_183364-114487.jpg?w=360&t=st=1708419125~exp=1708419725~hmac=673a911799f6fc9e5d5bde285346169af5f270a5ef675ceec33f29555b6e401e",
+              uri: "https://freedesignfile.com/upload/2013/07/Doctor-4.jpg",
             }}
             style={styles.signupImg}
-            resizeMode="contain"
+            resizeMode="cover"
           />
         </View>
 
@@ -34,6 +100,12 @@ function SigninScreen() {
             <FontAwesome name="stethoscope" size={60} color="#900" />
             <Text style={styles.createAccText}>تسجيل الدخول</Text>
           </View>
+          {/* {errorMessage != null ? (
+            <Text style={styles.errorMsg}>{errorMessage}</Text>
+          ) : null}
+          {successMessage != null ? (
+            <Text style={styles.successMsg}>{successMessage}</Text>
+          ) : null} */}
           <View style={styles.inputsView}>
             <View style={styles.labelView}>
               <FontAwesome name="envelope" size={30} color="#900" />
@@ -44,7 +116,11 @@ function SigninScreen() {
               placeholder=" البريد الالكتروني"
               placeholderTextColor={"white"}
               keyboardType="email-address"
+              onChangeText={setEmail}
             />
+            {errors.email ? (
+              <Text style={styles.errorText}>{errors.email}</Text>
+            ) : null}
           </View>
           <View style={styles.inputsView}>
             <View style={styles.labelView}>
@@ -57,9 +133,19 @@ function SigninScreen() {
               placeholderTextColor={"white"}
               keyboardType="default"
               secureTextEntry={true}
+              onChangeText={setPassword}
             />
+            {errors.password ? (
+              <Text style={styles.errorText}>{errors.password}</Text>
+            ) : null}
           </View>
-          <Pressable>
+          <View style={styles.quesContainer}>
+            <Text style={styles.signupLink}>هل نسيت كلمة المرور؟</Text>
+            <Text style={styles.forgetPass}>
+              اذا لم يكن لديك حساب قم بالتسجيل.
+            </Text>
+          </View>
+          <Pressable onPress={handleSubmit}>
             <Text style={styles.button}>تسجيل </Text>
           </Pressable>
         </View>
@@ -73,13 +159,9 @@ export default SigninScreen;
 const styles = StyleSheet.create({
   contanier: {
     flex: 1,
-    paddingVertical: StatusBar.currentHeight,
+    // paddingVertical: StatusBar.currentHeight,
     justifyContent: "center",
   },
-  // Image: {
-  //   height: "40%",
-  //   width: "100%",
-  // },
   imageContainer: {
     justifyContent: "center",
     alignItems: "center",
@@ -87,8 +169,9 @@ const styles = StyleSheet.create({
   signupImg: {
     // flex: 0.5, // Set the width of the image to 20% of its parent's width
     // aspectRatio: 1, // Maintain the aspect ratio of the image
-    width: 300,
-    height: 300,
+    width: "100%",
+    height: 350,
+    marginBottom: 20,
   },
   form: {
     flex: 1,
@@ -110,6 +193,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 5,
     textAlign: "right",
     backgroundColor: "#071355",
+    shadowColor: "black",
+    shadowOffset: {
+      width: 6,
+      height: 6,
+    },
+    shadowOpacity: 0.9,
+    shadowRadius: 4,
+    elevation: 13,
   },
   labelView: {
     flexDirection: "row-reverse", // Change the direction of the row to right-to-left
@@ -150,6 +241,33 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 10,
     textAlign: "center",
-    marginVertical: 60,
+    marginVertical: 30,
+  },
+  successMsg: {
+    marginVertical: 10,
+    color: "green",
+    fontSize: 22,
+    fontWeight: "500",
+  },
+  errorMsg: {
+    marginVertical: 10,
+    color: "#900",
+    fontSize: 22,
+    fontWeight: "500",
+  },
+  quesContainer: {
+    marginTop: 20,
+  },
+  signupLink: {
+    marginBottom: 10,
+    fontSize: 16,
+  },
+  forgetPass: {
+    marginBottom: 10,
+    fontSize: 16,
+  },
+  errorText: {
+    color: "red",
+    marginTop: 10,
   },
 });
