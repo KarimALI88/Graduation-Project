@@ -32,7 +32,7 @@ export default function RespHosp({ hospitals, visible}) {
       >
         <Pressable onPress={() => {
                 navigation.navigate("ReqHospital");
-              }}><AntDesign name="closecircle" size={24} color="black" /></Pressable>
+              }}><AntDesign name="closecircle" size={24} color="black"  style={{marginHorizontal: 10, marginVertical: 10}}/></Pressable>
         <FlatList
           data={hospitals.list1} // Assuming "hospitals" is the response data
           renderItem={({ item }) => (

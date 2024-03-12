@@ -100,15 +100,15 @@ function Profile() {
 
       const data = await response.json();
 
-      if (data.id) {
+      if (data) {
         console.log("Update successful");
         console.log(data);
-        setSuccessMessage("تم التحديث بنجاح")
+        setSuccessMessage("تم التحديث بنجاح");
         Toast.success(successMessage);
       } else {
         console.log("Update failed");
         console.log(data.errors[0].msg);
-        setErrorMessage(data.errors[0].msg)
+        setErrorMessage(data.errors[0].msg);
         Toast.error(errorMessage);
       }
     } catch (error) {
@@ -192,6 +192,7 @@ function Profile() {
 
   return (
     <View style={styles.container}>
+      <StatusBar backgroundColor={"#071355"} color={"white"}/>
       <ScrollView>
         <View style={styles.profileImgContainer}>
           {user.gender === "male" ? (
@@ -395,7 +396,7 @@ export default Profile;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingVertical: StatusBar.currentHeight,
+    // paddingVertical: StatusBar.currentHeight,
     backgroundColor: "#f5f5f5",
   },
   profileImgContainer: {

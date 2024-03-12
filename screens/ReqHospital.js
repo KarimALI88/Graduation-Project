@@ -22,7 +22,7 @@ import { Entypo } from "@expo/vector-icons";
 
 const reqHospImg = require("../assets/hospital-form.png");
 
-export default function ReqHospital() {
+export default function ReqHospital({navigation}) {
   const [location, setLocation] = useState({
     coords: {
       latitude: 30.158392910140286,
@@ -72,7 +72,7 @@ export default function ReqHospital() {
         // console.log(data);
         setHospitals(data);
         setVisible(true);
-
+        // navigation.navigate("RespHosp")
         // setUser(data.data);
       } else {
         console.log("No token received");
@@ -123,7 +123,7 @@ export default function ReqHospital() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar />
+      <StatusBar backgroundColor={"#071355"} color={"white"}/>
       <ScrollView
         showsVerticalScrollIndicator={false}
         refreshControl={
@@ -295,7 +295,7 @@ export default function ReqHospital() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingVertical: StatusBar.currentHeight,
+    // paddingVertical: StatusBar.currentHeight,
     paddingHorizontal: 15,
     backgroundColor: "#071355",
   },

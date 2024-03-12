@@ -23,7 +23,7 @@ export default function Signup({navigation}) {
   let formValidation=Yup.object({
     userName:Yup.string().min(3,"اسم المستخدم ثلاثة حروف او اكتر").max(10,'اسم المستخدم اقل من 10 حروف').required("يرجى ادخال اسم المستخدم"),
     email:Yup.string().email("الخاص بك بطريقة صحيحة'gmail'يرجى ادخال ").required("الخاص بك'gmail'يرجى ادخال"),
-    password:Yup.string().required('يرجى ادخال كلمة المرور').matches(/^[A-Z][\w @]{5,8}$/,'كلمة المرور يجب أن تحتوي على حرف كبير وحرف خاص'),
+    password:Yup.string().required('يرجى ادخال كلمة المرور').matches(/^(?=.*[A-Z])(?=.*[\W_])(?=.{8,})[\w\W]+$/,'كلمة المرور يجب أن تحتوي على حرف كبير وحرف خاص'),
     passwordConfirm:Yup.string().required('يرجي تاكيد كلمه المرور').oneOf([Yup.ref('password')],'تأكيد كلمة المرور غير صحيح'),
     phone:Yup.string().matches(/^01[0125][0-9]{8}$/,'رقم الهاتف يجب ان يكون مصرى').required('يرجى ادخال رقم الهاتف'),
     age:Yup.string().required('يرجى ادخال العمر')
@@ -69,6 +69,7 @@ export default function Signup({navigation}) {
 }
   return (
     <SafeAreaView style={styles.container}>
+      <StatusBar backgroundColor={"#071355"} color={"white"}/>
       <Formik
         initialValues={{
           userName: "",

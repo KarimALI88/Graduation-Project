@@ -9,29 +9,28 @@ import {
   StatusBar,
   Pressable,
 } from "react-native";
-import AppStack from "../AppStack";
-// import { AboutStack } from "../AppStack";
 
-function Index({navigation}) {
+function Index({ navigation }) {
   const logo = require("../assets/hompital-Logo.png");
   return (
     <SafeAreaView style={styles.container}>
-
-      <Image style={styles.image} source={logo} resizeMode="contain" />
+      <StatusBar backgroundColor={"#071355"} color={"white"}/>
       <Text style={styles.title}>Hompital</Text>
-      <Text style={styles.text}>
+      <Image style={styles.image} source={logo} resizeMode="contain" />
+
+      {/* <Text style={styles.text}>
         دلوقتي تقدر تعرف فين اقرب مستشفي بتعالج حالتك من بيتك وكمان بنساعد المسعفين
         فانهم يوفروا وقت ويروحوا القرب مستشفي متاحه ومتاح فيها مكان
-      </Text>
-      <Pressable onPress={() => {
+      </Text> */}
+      <Pressable
+        onPress={() => {
           navigation.navigate("SigninScreen");
-        }}>
+        }}
+      >
         <Text style={styles.button}>تسجيل الدخول</Text>
       </Pressable>
     </SafeAreaView>
-
   );
-  
 }
 
 export default Index;
@@ -41,9 +40,9 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#f5f5f5",
     alignItems: "center",
-    justifyContent: "space-evenly",
+    justifyContent: "center",
     paddingTop: StatusBar.currentHeight,
-    paddingBottom: 70,
+    // paddingBottom: 20,
   },
   title: {
     color: "#071355",
@@ -68,9 +67,10 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     borderRadius: 10,
     fontWeight: "bold",
-    backgroundColor: "#071355",
+    backgroundColor: "#900",
     color: "white",
-    fontSize:16,
+    fontSize: 20,
+    width:300,
     shadowColor: "black",
     shadowOffset: {
       width: 6,
@@ -78,6 +78,8 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.9,
     shadowRadius: 4,
-    elevation : 10
+    elevation: 10,
+    textAlign: "center",
+    marginVertical: 30,
   },
 });

@@ -10,49 +10,51 @@ import {
   StatusBar,
   Pressable,
 } from "react-native";
-import { Toast } from 'toastify-react-native'
+import { Toast } from "toastify-react-native";
 import { FontAwesome } from "@expo/vector-icons";
 import { Formik } from "formik";
-import * as Yup from 'yup'
+import * as Yup from "yup";
 import { useState } from "react";
-function EnterVCode({navigation}) {
-  const [apiMessage,setApiMessage]=useState('')
- 
-  let formValidation=Yup.object({
-    resetCode:Yup.string().required("يرجي ادخال كود التاكيد")
-  })
+function EnterVCode({ navigation }) {
+  const [apiMessage, setApiMessage] = useState("");
+
+  let formValidation = Yup.object({
+    resetCode: Yup.string().required("يرجي ادخال كود التاكيد"),
+  });
   async function emailSubmit(values) {
     try {
-        const response = await fetch('http://192.168.1.7:8000/api/v1/auth/verifyResetCode', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-              resetCode:values.resetCode,
-              // values
-            })
-        })
-        const data = await response.json();
-        console.log(data);
-        if(data.status==='error'){
-          setApiMessage(data.message)
-          Toast.error(apiMessage);
-          
-
-        }else{
-          setApiMessage(data.message)
-          Toast.success(apiMessage);
-          setTimeout(()=>{navigation.navigate("ResetPassword")},3000)
+      const response = await fetch(
+        "http://192.168.1.7:8000/api/v1/auth/verifyResetCode",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            resetCode: values.resetCode,
+            // values
+          }),
         }
-    } 
-    catch(err){
-      console.log(err)
+      );
+      const data = await response.json();
+      console.log(data);
+      if (data.status === "error") {
+        setApiMessage(data.message);
+        Toast.error(apiMessage);
+      } else {
+        setApiMessage(data.message);
+        Toast.success(apiMessage);
+        setTimeout(() => {
+          navigation.navigate("ResetPassword");
+        }, 3000);
+      }
+    } catch (err) {
+      console.log(err);
     }
-}
+  }
   return (
-      <SafeAreaView style={styles.contanier}>
-        
+    <SafeAreaView style={styles.contanier}>
+      <StatusBar backgroundColor={"#071355"} color={"white"} />
       <Formik
         initialValues={{
           resetCode: "",
@@ -60,30 +62,36 @@ function EnterVCode({navigation}) {
         validationSchema={formValidation}
         onSubmit={emailSubmit}
       >
-        {({ handleChange, handleBlur, handleSubmit, values,errors,touched}) => (
+        {({
+          handleChange,
+          handleBlur,
+          handleSubmit,
+          values,
+          errors,
+          touched,
+        }) => (
           <View>
-          
             <ScrollView showsVerticalScrollIndicator={false}>
-            <View style={styles.imageContainer}>
-              <Image
-                source={{
-                  uri: "https://img.freepik.com/free-photo/fun-3d-cartoon-illustration-indian-doctor_183364-114487.jpg?w=360&t=st=1708419125~exp=1708419725~hmac=673a911799f6fc9e5d5bde285346169af5f270a5ef675ceec33f29555b6e401e",
-                }}
-                style={styles.signupImg}
-                resizeMode="contain"
-              />
-            </View>
-            {/* <View>{apiError ? <Text style={{ fontSize: 10, color: 'red' }}>{apiError}</Text> : ""}</View> */}
+              <View style={styles.imageContainer}>
+                <Image
+                  source={{
+                    uri: "https://img.freepik.com/free-photo/fun-3d-cartoon-illustration-indian-doctor_183364-114487.jpg?w=360&t=st=1708419125~exp=1708419725~hmac=673a911799f6fc9e5d5bde285346169af5f270a5ef675ceec33f29555b6e401e",
+                  }}
+                  style={styles.signupImg}
+                  resizeMode="contain"
+                />
+              </View>
+              {/* <View>{apiError ? <Text style={{ fontSize: 10, color: 'red' }}>{apiError}</Text> : ""}</View> */}
               <View style={styles.createAcc}>
                 <FontAwesome name="stethoscope" size={60} color="#900" />
                 <Text style={styles.createAccText}> كود التاكيد </Text>
               </View>
-              
+
               {/* resetCode*/}
               <View style={styles.inputsView}>
                 <View style={styles.labelView}>
                   <FontAwesome name="envelope" size={30} color="#900" />
-                  <Text style={styles.label}>   كود التاكيد</Text>
+                  <Text style={styles.label}> كود التاكيد</Text>
                 </View>
                 <TextInput
                   style={styles.input}
@@ -94,16 +102,21 @@ function EnterVCode({navigation}) {
                   onBlur={handleBlur("resetCode")}
                   value={values.resetCode}
                 />
-                {errors.resetCode &&touched.resetCode?<Text style={{ fontSize: 10, color: 'red' }}>{errors.resetCode}</Text>:""}
+                {errors.resetCode && touched.resetCode ? (
+                  <Text style={{ fontSize: 10, color: "red" }}>
+                    {errors.resetCode}
+                  </Text>
+                ) : (
+                  ""
+                )}
               </View>
               <Pressable onPress={handleSubmit}>
-                 <Text style={styles.button}>تسجيل</Text>
-                </Pressable>
+                <Text style={styles.button}>تسجيل</Text>
+              </Pressable>
             </ScrollView>
           </View>
         )}
       </Formik>
-      
     </SafeAreaView>
   );
 }
@@ -113,7 +126,8 @@ export default EnterVCode;
 const styles = StyleSheet.create({
   contanier: {
     flex: 1,
-    paddingVertical: StatusBar.currentHeight,
+    // paddingVertical: StatusBar.currentHeight,
+    paddingHorizontal: 20,
     justifyContent: "center",
     borderTopRightRadius: 30,
     borderTopLeftRadius: 40,

@@ -57,6 +57,7 @@ function EnterEmail({navigation}) {
 }
   return (
       <SafeAreaView style={styles.contanier}>
+        <StatusBar backgroundColor={"#071355"} color={"white"}/>
         
       <Formik
         initialValues={{
@@ -118,10 +119,9 @@ export default EnterEmail;
 const styles = StyleSheet.create({
   contanier: {
     flex: 1,
-    paddingVertical: StatusBar.currentHeight,
+    // paddingVertical: StatusBar.currentHeight,
+    paddingHorizontal: 20,
     justifyContent: "center",
-    borderTopRightRadius: 30,
-    borderTopLeftRadius: 40,
   },
   imageContainer: {
     justifyContent: "center",

@@ -88,15 +88,16 @@ function SigninScreen({navigation}) {
   return (
     <SafeAreaView style={styles.contanier}>
       {/* <Image source={bg} style={styles.Image} resizeMode="cover" /> */}
-      <StatusBar backgroundColor="#3447b2" />
+      {/* <StatusBar backgroundColor="#3447b2" /> */}
+      <StatusBar backgroundColor={"#071355"} color={"white"}/>
       <ScrollView>
         <View style={styles.imageContainer}>
           <Image
             source={{
-              uri: "https://freedesignfile.com/upload/2013/07/Doctor-4.jpg",
+              uri: "https://img.freepik.com/free-photo/fun-3d-cartoon-illustration-indian-doctor_183364-114487.jpg?w=360&t=st=1708419125~exp=1708419725~hmac=673a911799f6fc9e5d5bde285346169af5f270a5ef675ceec33f29555b6e401e",
             }}
             style={styles.signupImg}
-            resizeMode="cover"
+            resizeMode="contain"
           />
         </View>
 
@@ -194,7 +195,7 @@ const styles = StyleSheet.create({
     flex: 1,
     borderTopRightRadius: 30,
     borderTopLeftRadius: 40,
-    paddingHorizontal: 15,
+    paddingHorizontal: 20,
   },
   inputsView: {
     marginTop: 40,
