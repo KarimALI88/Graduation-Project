@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import {
   View,
   Text,
@@ -9,12 +9,14 @@ import {
   StatusBar,
   Pressable,
 } from "react-native";
+import AuthContext from "../context/AuthContext";
 
 function Index({ navigation }) {
   const logo = require("../assets/hompital-Logo.png");
+  const { token } = useContext(AuthContext);
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar backgroundColor={"#071355"} color={"white"}/>
+      <StatusBar backgroundColor={"#071355"} color={"white"} />
       <Text style={styles.title}>Hompital</Text>
       <Image style={styles.image} source={logo} resizeMode="contain" />
 
@@ -22,13 +24,21 @@ function Index({ navigation }) {
         دلوقتي تقدر تعرف فين اقرب مستشفي بتعالج حالتك من بيتك وكمان بنساعد المسعفين
         فانهم يوفروا وقت ويروحوا القرب مستشفي متاحه ومتاح فيها مكان
       </Text> */}
-      <Pressable
-        onPress={() => {
-          navigation.navigate("SigninScreen");
-        }}
-      >
-        <Text style={styles.button}>تسجيل الدخول</Text>
-      </Pressable>
+      {token ? <Pressable
+          onPress={() => {
+            navigation.navigate("ReqHospital");
+          }}
+        >
+          <Text style={styles.button}>طلب مستشفي</Text>
+        </Pressable> : (
+        <Pressable
+          onPress={() => {
+            navigation.navigate("SigninScreen");
+          }}
+        >
+          <Text style={styles.button}>تسجيل الدخول</Text>
+        </Pressable>
+      )}
     </SafeAreaView>
   );
 }
@@ -70,7 +80,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#900",
     color: "white",
     fontSize: 20,
-    width:300,
+    width: 300,
     shadowColor: "black",
     shadowOffset: {
       width: 6,

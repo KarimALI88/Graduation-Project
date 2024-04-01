@@ -11,7 +11,7 @@ import {
   ActivityIndicator,
   RefreshControl 
 } from "react-native";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { FontAwesome } from "@expo/vector-icons";
 import RNPickerSelect from "react-native-picker-select";
 import MapView, { Marker } from "react-native-maps";
@@ -19,6 +19,7 @@ import * as Location from "expo-location";
 import RespHosp from "../components/RespHosp";
 import hospitals from "../json-files/hospitals.json";
 import { Entypo } from "@expo/vector-icons";
+import AuthContext from "../context/AuthContext";
 
 const reqHospImg = require("../assets/hospital-form.png");
 
@@ -36,12 +37,13 @@ export default function ReqHospital({navigation}) {
   const [loading, setLoading] = useState(false);
   const [hospitals, setHospitals] = useState({});
   const [refreshing, setRefreshing] = useState(false);
-  const url = "http://192.168.1.7:8000/api/v1/select";
-  const JWT =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NWNiYmI3MzBmMzBlOWY5MDhkM2MxNWQiLCJpYXQiOjE3MDk0OTI2NTcsImV4cCI6MTcxODEzMjY1N30.Q96G9xHJMwiH9-zjLHwdFkPrBwgAN9HN3fMHlkNW57k";
+  const {token} = useContext(AuthContext)
+  const url = "http://192.168.1.8:8000/api/v1/select";
+  // const JWT =
+  //   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NWNiYmI3MzBmMzBlOWY5MDhkM2MxNWQiLCJpYXQiOjE3MDk0OTI2NTcsImV4cCI6MTcxODEzMjY1N30.Q96G9xHJMwiH9-zjLHwdFkPrBwgAN9HN3fMHlkNW57k";
   const headers = {
     "Content-Type": "application/json",
-    Authorization: "Bearer " + JWT,
+    Authorization: "Bearer " + token,
   };
 
   const body = JSON.stringify({
@@ -88,6 +90,9 @@ export default function ReqHospital({navigation}) {
   const onRefresh = () => {
     setRefreshing(true);
     setReqLocation(false)
+    setDisease(null)
+    setLoading(false)
+    setSection(null)
     // Perform your refresh logic here, such as fetching new data from an API
 
     setTimeout(() => {

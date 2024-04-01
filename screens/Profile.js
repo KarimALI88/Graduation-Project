@@ -11,9 +11,10 @@ import {
 import { FontAwesome } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
 import { Feather } from "@expo/vector-icons";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useEffect } from "react";
 import { Toast } from "toastify-react-native";
+import AuthContext from "../context/AuthContext";
 
 const manImage = require("../assets/man.png");
 const womenImage = require("../assets/women.png");
@@ -27,20 +28,22 @@ function Profile() {
   const [editPassword, setEditPassword] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const {token} = useContext(AuthContext)
   const [password, setPassword] = useState({
     currentPassword: "",
     updatedPassword: "",
     passwordConfirm: "",
   });
+  // console.log(token);
 
-  const url = "http://192.168.1.7:8000/api/v1/users/getMe";
-  const url2 = "http://192.168.1.7:8000/api/v1/users/updateMe";
-  const url3 = "http://192.168.1.7:8000/api/v1/users/chamgeMyPassword";
-  const JWT =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NWNiYmI3MzBmMzBlOWY5MDhkM2MxNWQiLCJpYXQiOjE3MDk1ODE1NDcsImV4cCI6MTcxODIyMTU0N30.zszPP723QEKMmT5Rer0yGkKYQiSyHjONW_uE2heCgjs";
+  const url = "http://192.168.1.8:8000/api/v1/users/getMe";
+  const url2 = "http://192.168.1.8:8000/api/v1/users/updateMe";
+  const url3 = "http://192.168.1.8:8000/api/v1/users/chamgeMyPassword";
+  // const JWT =
+  //   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NWNiYmI3MzBmMzBlOWY5MDhkM2MxNWQiLCJpYXQiOjE3MDk1ODE1NDcsImV4cCI6MTcxODIyMTU0N30.zszPP723QEKMmT5Rer0yGkKYQiSyHjONW_uE2heCgjs";
   const headers = {
     "Content-Type": "application/json",
-    Authorization: "Bearer " + JWT,
+    Authorization: "Bearer " + token,
   };
 
   const body = JSON.stringify({
@@ -397,7 +400,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     // paddingVertical: StatusBar.currentHeight,
-    backgroundColor: "#f5f5f5",
+    backgroundColor: "#071355",
   },
   profileImgContainer: {
     justifyContent: "center",

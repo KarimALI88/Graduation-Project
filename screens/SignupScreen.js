@@ -35,7 +35,7 @@ export default function Signup({navigation}) {
 
   async function registerSubmit(values) {
     try {
-        const response = await fetch('http://192.168.1.7:8000/api/v1/auth/signup', {
+        const response = await fetch('http://192.168.1.8:8000/api/v1/auth/signup', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -55,7 +55,7 @@ export default function Signup({navigation}) {
         if(data.errors && data.errors.length > 0 && data.errors[0].type ==='field'){
           setApiMessage(data.errors.msg)
           Toast.error(apiMessage);
-        }else{
+        }else{ 
           // setApiMessage(data.message)
           Toast.success("تم انشاء حساب ");
           setTimeout(()=>{navigation.navigate("SigninScreen")},3000)
@@ -237,6 +237,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingVertical: StatusBar.currentHeight,
     paddingHorizontal: 15,
+    backgroundColor: "white"
   },
   imageContainer: {
     justifyContent: "center",

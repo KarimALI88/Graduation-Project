@@ -12,8 +12,9 @@ import {
 } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Toast } from "toastify-react-native";
+import AuthContext from "../context/AuthContext";
 
 // const bg = require("../assets/signin.jpg");
 
@@ -23,6 +24,7 @@ function SigninScreen({navigation}) {
   const [successMessage, setSuccessMessage] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
   const [errors, setErrors] = useState({});
+  const {setToken} = useContext(AuthContext)
 
   const validateForm = () => {
     let errors = {};
@@ -34,7 +36,7 @@ function SigninScreen({navigation}) {
 
     return Object.keys(errors).length === 0;
   };
-  const url = "http://192.168.1.7:8000/api/v1/auth/login";
+  const url = "http://192.168.1.8:8000/api/v1/auth/login";
   const headers = {
     "Content-Type": "application/json",
     Authorization: "Bearer " + AsyncStorage.getItem("JWT"),
@@ -49,9 +51,8 @@ function SigninScreen({navigation}) {
     body: body,
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async () => {
     // Prevent default form submission behavior
-    e.preventDefault();
 
     if (validateForm()) {
       try {
@@ -64,6 +65,7 @@ function SigninScreen({navigation}) {
 
           // Update AsyncStorage with the token
           await AsyncStorage.setItem("JWT", data.token);
+          setToken(data.token)
 
           // Display the success toast message after the state has been updated
           
@@ -72,7 +74,7 @@ function SigninScreen({navigation}) {
 
   
           setErrorMessage(null);
-          setTimeout(()=>{navigation.navigate("ReqHospital")},3000)
+          setTimeout(()=>{navigation.navigate("Index")},3000)
         } else {
           // Set the error message
           setErrorMessage(data.message);
@@ -179,6 +181,7 @@ const styles = StyleSheet.create({
     flex: 1,
     // paddingVertical: StatusBar.currentHeight,
     justifyContent: "center",
+    backgroundColor: "white"
   },
   imageContainer: {
     justifyContent: "center",

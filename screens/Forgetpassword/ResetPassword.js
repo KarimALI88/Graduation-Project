@@ -35,7 +35,7 @@ export default function ResetPassword({ navigation }) {
   async function newPasswordSubmit(values) {
     try {
       const response = await fetch(
-        "http://192.168.1.7:8000/api/v1/auth/resetPassword",
+        "http://192.168.1.8:8000/api/v1/auth/resetPassword",
         {
           method: "PUT",
           headers: {
