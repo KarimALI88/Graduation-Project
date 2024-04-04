@@ -10,16 +10,17 @@ import {
 } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
+import { MaterialIcons } from '@expo/vector-icons';
 import { Feather } from "@expo/vector-icons";
 import { useContext, useState } from "react";
 import { useEffect } from "react";
 import { Toast } from "toastify-react-native";
 import AuthContext from "../context/AuthContext";
 
-const manImage = require("../assets/man.png");
-const womenImage = require("../assets/women.png");
+const manImage = require("../assets/man-img.png");
+const womenImage = require("../assets/women-img.png");
 
-function Profile() {
+function Profile({navigation}) {
   const [user, setUser] = useState({});
   const [editEmail, setEditEmail] = useState(false);
   const [editUserName, setEditUserName] = useState(false);
@@ -29,6 +30,7 @@ function Profile() {
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const {token} = useContext(AuthContext)
+  const {setToken} = useContext(AuthContext)
   const [password, setPassword] = useState({
     currentPassword: "",
     updatedPassword: "",
@@ -36,9 +38,9 @@ function Profile() {
   });
   // console.log(token);
 
-  const url = "http://192.168.1.8:8000/api/v1/users/getMe";
-  const url2 = "http://192.168.1.8:8000/api/v1/users/updateMe";
-  const url3 = "http://192.168.1.8:8000/api/v1/users/chamgeMyPassword";
+  const url = "http://192.168.1.5:8000/api/v1/users/getMe";
+  const url2 = "http://192.168.1.5:8000/api/v1/users/updateMe";
+  const url3 = "http://192.168.1.5:8000/api/v1/users/chamgeMyPassword";
   // const JWT =
   //   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NWNiYmI3MzBmMzBlOWY5MDhkM2MxNWQiLCJpYXQiOjE3MDk1ODE1NDcsImV4cCI6MTcxODIyMTU0N30.zszPP723QEKMmT5Rer0yGkKYQiSyHjONW_uE2heCgjs";
   const headers = {
@@ -87,6 +89,7 @@ function Profile() {
       console.error("Error during login:", error);
     }
   };
+
   useEffect(() => {
     getUser();
   }, []);
@@ -118,6 +121,7 @@ function Profile() {
       console.error("Error during update:", error);
     }
   };
+
   const updatePass = async () => {
     try {
       const response = await fetch(url3, {
@@ -193,10 +197,16 @@ function Profile() {
     }
   };
 
+  const logOut = () => {
+    console.log("logout");
+    setToken(null)
+    navigation.navigate("SigninScreen")
+  }
   return (
     <View style={styles.container}>
       <StatusBar backgroundColor={"#071355"} color={"white"}/>
       <ScrollView>
+        {/* image */}
         <View style={styles.profileImgContainer}>
           {user.gender === "male" ? (
             <Image
@@ -211,6 +221,13 @@ function Profile() {
               resizeMode="contain"
             />
           )}
+        </View>
+        {/* logout button */}
+        <View style={styles.logoutView}>
+          <Pressable style={styles.logOut} onPress={logOut}>
+            <Text style={styles.logOutText}>تسجيل الخروج  </Text>
+            <MaterialIcons name="logout" size={24} color="black" />
+          </Pressable>
         </View>
         {/* {emial} */}
         <View style={styles.inputsView}>
@@ -326,7 +343,7 @@ function Profile() {
               style={styles.input}
               placeholder="العمر"
               placeholderTextColor={"#071355"}
-              keyboardType="numeric"
+              keyboardType="number-pad"
               value={user.age}
               onChangeText={(text) => setUser({ ...user, age: text })}
             />
@@ -410,6 +427,33 @@ const styles = StyleSheet.create({
     // height: '60%',
     width: 400,
     height: 300,
+  },
+  logOut: {
+    backgroundColor: "white",
+    paddingHorizontal: 10,
+    paddingVertical: 10,
+    width: "auto",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginRight: 20,
+    borderRadius: 20,
+    shadowColor: "black",
+    shadowOffset: {
+      width: 6,
+      height: 6,
+    },
+    shadowOpacity: 0.9,
+    shadowRadius: 4,
+    elevation: 13,
+  },
+  logoutView :{
+    flexDirection: "row-reverse",
+    justifyContent: "flex-start",
+  },
+  logOutText : {
+    fontSize : 18,
+    fontWeight: "700",
+    paddingRight: 5
   },
   inputsView: {
     backgroundColor: "white",

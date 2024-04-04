@@ -35,7 +35,7 @@ export default function Signup({navigation}) {
 
   async function registerSubmit(values) {
     try {
-        const response = await fetch('http://192.168.1.8:8000/api/v1/auth/signup', {
+        const response = await fetch('http://192.168.1.5:8000/api/v1/auth/signup', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

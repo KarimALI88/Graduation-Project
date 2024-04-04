@@ -14,9 +14,12 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { FontAwesome } from "@expo/vector-icons";
 import { Image } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import { useContext } from "react";
+import ModalContext from "../context/ModalContext";
 
 export default function RespHosp({ hospitals, visible }) {
-  const navigation = useNavigation();
+  const {setVisible} = useContext(ModalContext)
+  // const navigation = useNavigation();
   const hospImg = require("../assets/hospital-icon.png");
 
   const handleLocationPress = (link) => {
@@ -31,7 +34,7 @@ export default function RespHosp({ hospitals, visible }) {
         presentationStyle="pageSheet"
         onRequestClose={() => (visible = true)}
       >
-        <Pressable onPress={() => navigation.goBack()}>
+        <Pressable onPress={()=> setVisible(false)}>
           <AntDesign
             name="closecircle"
             size={24}
@@ -67,7 +70,7 @@ export default function RespHosp({ hospitals, visible }) {
           )}
           keyExtractor={(item) => item.hospital_name}
           ItemSeparatorComponent={() => <View style={{ height: 16 }}></View>}
-          ListEmptyComponent={<Text>No Items found</Text>}
+          ListEmptyComponent={<Text> لا يوجد مستشفيات متاحة الان</Text>}
           ListHeaderComponent={
             <Text style={styles.headerText}>
               المستشفيات المتاحة والقريبة من موقعك الآن :{" "}
@@ -113,7 +116,7 @@ export default function RespHosp({ hospitals, visible }) {
               ItemSeparatorComponent={() => (
                 <View style={{ height: 16 }}></View>
               )}
-              ListEmptyComponent={<Text>No Items found</Text>}
+              ListEmptyComponent={<Text>لا يوجد مستشفيات سوف تكون متاحة قريبا</Text>}
               ListHeaderComponent={
                 <Text style={styles.headerText}>
                   مستشقيات سوف تكون متاحة قريبا :{" "}

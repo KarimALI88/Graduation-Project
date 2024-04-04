@@ -14,9 +14,11 @@ import { Toast } from "toastify-react-native";
 import { FontAwesome } from "@expo/vector-icons";
 import { Formik } from "formik";
 import * as Yup from "yup";
-import { useState } from "react";
+import { useContext, useState } from "react";
+import AuthContext from "../../context/AuthContext";
 function EnterVCode({ navigation }) {
   const [apiMessage, setApiMessage] = useState("");
+  const {setTemporaryToken} = useContext(AuthContext)
 
   let formValidation = Yup.object({
     resetCode: Yup.string().required("يرجي ادخال كود التاكيد"),
@@ -24,7 +26,7 @@ function EnterVCode({ navigation }) {
   async function emailSubmit(values) {
     try {
       const response = await fetch(
-        "http://192.168.1.8:8000/api/v1/auth/verifyResetCode",
+        "http://192.168.1.5:8000/api/v1/auth/verifyResetCode",
         {
           method: "POST",
           headers: {
@@ -42,6 +44,7 @@ function EnterVCode({ navigation }) {
         setApiMessage(data.message);
         Toast.error(apiMessage);
       } else {
+        setTemporaryToken(data.token)
         setApiMessage(data.message);
         Toast.success(apiMessage);
         setTimeout(() => {

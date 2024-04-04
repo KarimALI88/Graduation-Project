@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import {
   View,
   Text,
@@ -15,11 +15,13 @@ import { Formik } from "formik";
 import { ScrollView } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
 import * as Yup from "yup";
+import AuthContext from "../../context/AuthContext";
 
 export default function ResetPassword({ navigation }) {
   const [apiMessage, setApiMessage] = useState("");
-  const JWT =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NWUxZGIzOTdmNzg3ZjliMWI3MWViNGUiLCJpYXQiOjE3MDkzMTg4MDIsImV4cCI6MTcxNzk1ODgwMn0.EkfxpObCa6FmyUmvJDFo0_mxQJZS5ZpiUOvsPfACk38";
+  const {temporaryToken} = useContext(AuthContext)
+  // const JWT =
+  //   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NWUxZGIzOTdmNzg3ZjliMWI3MWViNGUiLCJpYXQiOjE3MDkzMTg4MDIsImV4cCI6MTcxNzk1ODgwMn0.EkfxpObCa6FmyUmvJDFo0_mxQJZS5ZpiUOvsPfACk38";
   let formValidation = Yup.object({
     newPassword: Yup.string()
       .required("يرجى ادخال كلمة المرور")
@@ -35,12 +37,12 @@ export default function ResetPassword({ navigation }) {
   async function newPasswordSubmit(values) {
     try {
       const response = await fetch(
-        "http://192.168.1.8:8000/api/v1/auth/resetPassword",
+        "http://192.168.1.5:8000/api/v1/auth/resetPassword",
         {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
-            Authorization: "Bearer " + JWT,
+            Authorization: "Bearer " + temporaryToken,
           },
           body: JSON.stringify({
             newPassword: values.newPassword,

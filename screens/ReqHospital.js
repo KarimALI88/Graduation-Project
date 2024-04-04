@@ -20,6 +20,7 @@ import RespHosp from "../components/RespHosp";
 import hospitals from "../json-files/hospitals.json";
 import { Entypo } from "@expo/vector-icons";
 import AuthContext from "../context/AuthContext";
+import ModalContext from "../context/ModalContext";
 
 const reqHospImg = require("../assets/hospital-form.png");
 
@@ -30,15 +31,16 @@ export default function ReqHospital({navigation}) {
       longitude: 31.62863789393309,
     },
   });
-  const [disease, setDisease] = useState(null);
-  const [section, setSection] = useState(null);
+  const [disease, setDisease] = useState("يصعب التشخيص");
+  const [section, setSection] = useState("خاص أو حكومي");
   const [reqLocation, setReqLocation] = useState(false);
-  const [visible, setVisible] = useState(false);
+  // const [visible, setVisible] = useState(false);
+  const {visible, setVisible} = useContext(ModalContext)
   const [loading, setLoading] = useState(false);
   const [hospitals, setHospitals] = useState({});
   const [refreshing, setRefreshing] = useState(false);
   const {token} = useContext(AuthContext)
-  const url = "http://192.168.1.8:8000/api/v1/select";
+  const url = "http://192.168.1.5:8000/api/v1/select";
   // const JWT =
   //   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NWNiYmI3MzBmMzBlOWY5MDhkM2MxNWQiLCJpYXQiOjE3MDk0OTI2NTcsImV4cCI6MTcxODEzMjY1N30.Q96G9xHJMwiH9-zjLHwdFkPrBwgAN9HN3fMHlkNW57k";
   const headers = {
@@ -90,9 +92,7 @@ export default function ReqHospital({navigation}) {
   const onRefresh = () => {
     setRefreshing(true);
     setReqLocation(false)
-    setDisease(null)
     setLoading(false)
-    setSection(null)
     // Perform your refresh logic here, such as fetching new data from an API
 
     setTimeout(() => {
@@ -194,6 +194,7 @@ export default function ReqHospital({navigation}) {
                 { label: "نسا وتوليد", value: "نسا وتوليد" },
                 { label: "يصعب التشخيص", value: "يصعب التشخيص" },
               ]}
+              value={"يصعب التشخيص"}
             />
           </View>
           {/* choose private or governmental */}
@@ -235,6 +236,7 @@ export default function ReqHospital({navigation}) {
                 { label: "حكومي", value: "حكومي" },
                 { label: "خاص أو حكومي ", value: "خاص أو حكومي" },
               ]}
+              value="خاص أو حكومي"
             />
           </View>
           {/* location */}
