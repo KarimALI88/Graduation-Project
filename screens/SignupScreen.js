@@ -9,67 +9,86 @@ import {
   TextInput,
   Pressable,
   Button,
-  ScrollView
+  ScrollView,
 } from "react-native";
-import { Toast } from 'toastify-react-native'
+import { Toast } from "toastify-react-native";
 import { Formik } from "formik";
 import RNPickerSelect from "react-native-picker-select";
 import { FontAwesome } from "@expo/vector-icons";
-import * as Yup from 'yup'
+import * as Yup from "yup";
 const signupImage = require("../assets/signup-img.png");
 
-export default function Signup({navigation}) {
-  let [apiMessage,setApiMessage]=useState('')
-  let formValidation=Yup.object({
-    userName:Yup.string().min(3,"اسم المستخدم ثلاثة حروف او اكتر").max(10,'اسم المستخدم اقل من 10 حروف').required("يرجى ادخال اسم المستخدم"),
-    email:Yup.string().email("الخاص بك بطريقة صحيحة'gmail'يرجى ادخال ").required("الخاص بك'gmail'يرجى ادخال"),
-    password:Yup.string().required('يرجى ادخال كلمة المرور').matches(/^(?=.*[A-Z])(?=.*[\W_])(?=.{8,})[\w\W]+$/,'كلمة المرور يجب أن تحتوي على حرف كبير وحرف خاص'),
-    passwordConfirm:Yup.string().required('يرجي تاكيد كلمه المرور').oneOf([Yup.ref('password')],'تأكيد كلمة المرور غير صحيح'),
-    phone:Yup.string().matches(/^01[0125][0-9]{8}$/,'رقم الهاتف يجب ان يكون مصرى').required('يرجى ادخال رقم الهاتف'),
-    age:Yup.string().required('يرجى ادخال العمر')
+export default function Signup({ navigation }) {
+  const [apiMessage, setApiMessage] = useState("");
+  const [gender, setGender] = useState("male");
 
+  const formValidation = Yup.object().shape({
+    userName: Yup.string()
+      .min(3, "اسم المستخدم ثلاثة حروف او اكتر")
+      .max(10, "اسم المستخدم اقل من 10 حروف")
+      .required("يرجى ادخال اسم المستخدم"),
+    email: Yup.string()
+      .email("الخاص بك بطريقة صحيحة'gmail'يرجى ادخال ")
+      .required("الخاص بك'gmail'يرجى ادخال"),
+    password: Yup.string()
+      .required("يرجى ادخال كلمة المرور")
+      .matches(
+        /^[A-Z][\w @]{5,8}$/,
+        "كلمة المرور يجب أن تحتوي على حرف كبير وحرف خاص"
+      ),
+    passwordConfirm: Yup.string()
+      .required("يرجي تاكيد كلمه المرور")
+      .oneOf([Yup.ref("password")], "تأكيد كلمة المرور غير صحيح"),
+    phone: Yup.string()
+      .matches(/^01[0125][0-9]{8}$/, "رقم الهاتف يجب ان يكون مصرى")
+      .required("يرجى ادخال رقم الهاتف"),
+    age: Yup.string().required("يرجى ادخال العمر"),
+  });
 
-
-  })
-    
-
-  async function registerSubmit(values) {
+  const registerSubmit = async (values) => {
+    console.log("submit");
     try {
-        const response = await fetch('http://192.168.1.5:8000/api/v1/auth/signup', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-              userName:values.userName,
-              email:values.email,
-              phone:values.phone,
-              password:values.password,
-              passwordConfirm:values.passwordConfirm,
-              gender:"female",
-              age:values.age
-            })
-        })
-        const data = await response.json();
-        console.log(data);
-        if(data.errors && data.errors.length > 0 && data.errors[0].type ==='field'){
-          setApiMessage(data.errors.msg)
-          Toast.error(apiMessage);
-        }else{ 
-          // setApiMessage(data.message)
-          Toast.success("تم انشاء حساب ");
-          setTimeout(()=>{navigation.navigate("SigninScreen")},3000)
+      const response = await fetch(
+        "http://192.168.1.9:8000/api/v1/auth/signup",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            userName: values.userName,
+            email: values.email,
+            phone: values.phone,
+            password: values.password,
+            passwordConfirm: values.passwordConfirm,
+            gender: gender,
+            age: values.age,
+          }),
         }
-    } 
-    catch(err){
-      
-     console.log(err)
+      );
+      const data = await response.json();
+      console.log(data);
+      if (
+        data.errors &&
+        data.errors.length > 0 &&
+        data.errors[0].type === "field"
+      ) {
+        setApiMessage(data.errors.msg);
+        Toast.error(apiMessage);
+      } else {
+        Toast.success("تم انشاء حساب ");
+        setTimeout(() => {
+          navigation.navigate("SigninScreen");
+        }, 3000);
+      }
+    } catch (err) {
+      console.log(err);
     }
+  };
 
-}
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar backgroundColor={"#071355"} color={"white"}/>
+      <StatusBar backgroundColor={"#071355"} color={"white"} />
       <Formik
         initialValues={{
           userName: "",
@@ -81,11 +100,17 @@ export default function Signup({navigation}) {
           age: "",
         }}
         validationSchema={formValidation}
-        onSubmit={registerSubmit}
+        onSubmit={(values) => registerSubmit(values)}
       >
-        {({ handleChange, handleBlur, handleSubmit, values,errors,touched}) => (
+        {({
+          handleChange,
+          handleBlur,
+          handleSubmit,
+          values,
+          errors,
+          touched,
+        }) => (
           <View>
-          
             <ScrollView showsVerticalScrollIndicator={false}>
               <View style={styles.imageContainer}>
                 <Image
@@ -99,7 +124,7 @@ export default function Signup({navigation}) {
                 <Text style={styles.createAccText}>إنشاء حساب</Text>
               </View>
               <View>
-              {/* {apiError?<Text style={{ fontSize: 10, color: 'red' }}>{apiError}</Text>:""} */}
+                {/* {apiError?<Text style={{ fontSize: 10, color: 'red' }}>{apiError}</Text>:""} */}
               </View>
               {/* user name */}
               <View style={styles.inputsView}>
@@ -131,7 +156,13 @@ export default function Signup({navigation}) {
                   onBlur={handleBlur("age")}
                   value={values.age}
                 />
-                {errors.age &&touched.age?<Text style={{ fontSize: 10, color: 'red' }}>{errors.age}</Text>:""}
+                {errors.age && touched.age ? (
+                  <Text style={{ fontSize: 10, color: "red" }}>
+                    {errors.age}
+                  </Text>
+                ) : (
+                  ""
+                )}
               </View>
               {/* phone*/}
               <View style={styles.inputsView}>
@@ -148,7 +179,13 @@ export default function Signup({navigation}) {
                   onBlur={handleBlur("phone")}
                   value={values.phone}
                 />
-                {errors.phone&&touched.phone?<Text style={{ fontSize: 10, color: 'red' }}>{errors.phone}</Text>:""}
+                {errors.phone && touched.phone ? (
+                  <Text style={{ fontSize: 10, color: "red" }}>
+                    {errors.phone}
+                  </Text>
+                ) : (
+                  ""
+                )}
               </View>
               {/* email*/}
               <View style={styles.inputsView}>
@@ -165,7 +202,13 @@ export default function Signup({navigation}) {
                   onBlur={handleBlur("email")}
                   value={values.email}
                 />
-                {errors.email &&touched.email?<Text style={{ fontSize: 10, color: 'red' }}>{errors.email}</Text>:""}
+                {errors.email && touched.email ? (
+                  <Text style={{ fontSize: 10, color: "red" }}>
+                    {errors.email}
+                  </Text>
+                ) : (
+                  ""
+                )}
               </View>
               {/* password*/}
               <View style={styles.inputsView}>
@@ -183,7 +226,13 @@ export default function Signup({navigation}) {
                   onBlur={handleBlur("password")}
                   value={values.password}
                 />
-                {errors.password&&touched.password?<Text style={{ fontSize: 10, color: 'red' }}>{errors.password}</Text>:""}
+                {errors.password && touched.password ? (
+                  <Text style={{ fontSize: 10, color: "red" }}>
+                    {errors.password}
+                  </Text>
+                ) : (
+                  ""
+                )}
               </View>
               {/* confirmpassword*/}
               <View style={styles.inputsView}>
@@ -201,7 +250,11 @@ export default function Signup({navigation}) {
                   onBlur={handleBlur("passwordConfirm")}
                   value={values.passwordConfirm}
                 />
-                {errors.passwordConfirm&&touched.passwordConfirm&&<Text style={{ fontSize: 10, color: 'red' }}>{errors.passwordConfirm}</Text>}
+                {errors.passwordConfirm && touched.passwordConfirm && (
+                  <Text style={{ fontSize: 10, color: "red" }}>
+                    {errors.passwordConfirm}
+                  </Text>
+                )}
               </View>
               {/* gender*/}
               <View style={styles.inputsView}>
@@ -210,14 +263,14 @@ export default function Signup({navigation}) {
                   <Text style={styles.label}> النوع </Text>
                 </View>
                 <RNPickerSelect
-                  onValueChange={(value) => console.log(value)}
+                  onValueChange={(value) => setgender(value)}
                   items={[
                     { label: "ذكر", value: "male" },
                     { label: "انثي", value: "female" },
                   ]}
                   onChangeText={handleChange("gender")}
                   onBlur={handleBlur("gender")}
-                  value={values.gender}
+                  value={gender}
                 />
               </View>
               <Pressable onPress={handleSubmit}>
@@ -232,12 +285,13 @@ export default function Signup({navigation}) {
     </SafeAreaView>
   );
 }
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingVertical: StatusBar.currentHeight,
     paddingHorizontal: 15,
-    backgroundColor: "white"
+    backgroundColor: "white",
   },
   imageContainer: {
     justifyContent: "center",

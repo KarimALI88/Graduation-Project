@@ -26,7 +26,7 @@ function EnterVCode({ navigation }) {
   async function emailSubmit(values) {
     try {
       const response = await fetch(
-        "http://192.168.1.5:8000/api/v1/auth/verifyResetCode",
+        "http://192.168.1.9:8000/api/v1/auth/verifyResetCode",
         {
           method: "POST",
           headers: {

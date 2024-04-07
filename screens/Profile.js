@@ -38,9 +38,9 @@ function Profile({navigation}) {
   });
   // console.log(token);
 
-  const url = "http://192.168.1.5:8000/api/v1/users/getMe";
-  const url2 = "http://192.168.1.5:8000/api/v1/users/updateMe";
-  const url3 = "http://192.168.1.5:8000/api/v1/users/chamgeMyPassword";
+  const url = "http://192.168.1.9:8000/api/v1/users/getMe";
+  const url2 = "http://192.168.1.9:8000/api/v1/users/updateMe";
+  const url3 = "http://192.168.1.9:8000/api/v1/users/chamgeMyPassword";
   // const JWT =
   //   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NWNiYmI3MzBmMzBlOWY5MDhkM2MxNWQiLCJpYXQiOjE3MDk1ODE1NDcsImV4cCI6MTcxODIyMTU0N30.zszPP723QEKMmT5Rer0yGkKYQiSyHjONW_uE2heCgjs";
   const headers = {
@@ -200,7 +200,7 @@ function Profile({navigation}) {
   const logOut = () => {
     console.log("logout");
     setToken(null)
-    navigation.navigate("SigninScreen")
+    navigation.navigate("Index")
   }
   return (
     <View style={styles.container}>

@@ -40,7 +40,7 @@ export default function ReqHospital({navigation}) {
   const [hospitals, setHospitals] = useState({});
   const [refreshing, setRefreshing] = useState(false);
   const {token} = useContext(AuthContext)
-  const url = "http://192.168.1.5:8000/api/v1/select";
+  const url = "http://192.168.1.9:8000/api/v1/select";
   // const JWT =
   //   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NWNiYmI3MzBmMzBlOWY5MDhkM2MxNWQiLCJpYXQiOjE3MDk0OTI2NTcsImV4cCI6MTcxODEzMjY1N30.Q96G9xHJMwiH9-zjLHwdFkPrBwgAN9HN3fMHlkNW57k";
   const headers = {
@@ -194,7 +194,7 @@ export default function ReqHospital({navigation}) {
                 { label: "نسا وتوليد", value: "نسا وتوليد" },
                 { label: "يصعب التشخيص", value: "يصعب التشخيص" },
               ]}
-              value={"يصعب التشخيص"}
+              // value={"يصعب التشخيص"}
             />
           </View>
           {/* choose private or governmental */}
@@ -236,7 +236,7 @@ export default function ReqHospital({navigation}) {
                 { label: "حكومي", value: "حكومي" },
                 { label: "خاص أو حكومي ", value: "خاص أو حكومي" },
               ]}
-              value="خاص أو حكومي"
+              value={section}
             />
           </View>
           {/* location */}

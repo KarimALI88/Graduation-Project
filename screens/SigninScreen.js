@@ -36,7 +36,7 @@ function SigninScreen({navigation}) {
 
     return Object.keys(errors).length === 0;
   };
-  const url = "http://192.168.1.5:8000/api/v1/auth/login";
+  const url = "http://192.168.1.9:8000/api/v1/auth/login";
   const headers = {
     "Content-Type": "application/json",
     Authorization: "Bearer " + AsyncStorage.getItem("JWT"),

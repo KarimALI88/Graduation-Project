@@ -30,7 +30,7 @@ function EnterEmail({navigation}) {
 
   async function emailSubmit(values) {
     try {
-        const response = await fetch('http://192.168.1.5:8000/api/v1/auth/forgotPassword', {
+        const response = await fetch('http://192.168.1.9:8000/api/v1/auth/forgotPassword', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

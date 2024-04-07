@@ -77,39 +77,18 @@ function TabNavigator() {
             }}
           />
           <Tab.Screen
-            name="ReqHospital"
-            component={ReqHospital}
-            options={{
-              tabBarLabel: "طلب مستشفي",
-              tabBarIcon: ({ color }) => (
-                <FontAwesome5 name="hospital-alt" size={27} color={color} />
-              ),
-            }}
-          />
-          <Tab.Screen
             name="Home"
             component={StackNavigator}
             options={{
-              tabBarLabel: "الصفحة الرئيسية",
+              tabBarLabel: " طلب مستشفي",
               tabBarIcon: ({ color }) => (
-                <Ionicons name={"home"} size={27} color={color} />
+                <FontAwesome5 name="hospital" size={27} color={color}/>
               ),
             }}
           />
         </>
       ) : (
         <>
-          <Tab.Screen
-            name="SigninScreen"
-            component={SigninScreen}
-            options={{
-              contentStyle: { backgroundColor: "white" },
-              tabBarLabel: " تسجيل الدخول",
-              tabBarIcon: ({ color }) => (
-                <Ionicons name="key-outline" size={27} color={color}></Ionicons>
-              ),
-            }}
-          />
           <Tab.Screen
             name="Home"
             component={StackNavigator}
@@ -121,20 +100,7 @@ function TabNavigator() {
               ),
             }}
           />
-          <Tab.Screen
-            name="Signup"
-            component={Signup}
-            options={{
-              tabBarLabel: "  انشاء حساب",
-              tabBarIcon: ({ color }) => (
-                <Ionicons
-                  name="person-add-outline"
-                  size={27}
-                  color={color}
-                ></Ionicons>
-              ),
-            }}
-          />
+
         </>
       )}
     </Tab.Navigator>
@@ -164,14 +130,6 @@ function StackNavigator() {
         options={{
           headerShown: true,
           title: "ادخال الايميل",
-        }}
-      />
-      <Stack.Screen
-        name="Profile"
-        component={Profile}
-        options={{
-          headerShown: true,
-          title: "الصفحة الشخصية",
         }}
       />
       <Stack.Screen
@@ -212,14 +170,6 @@ function StackNavigator() {
         options={{
           headerShown: true,
           title: " انشاء حساب",
-        }}
-      />
-      <Stack.Screen
-        name="RespHosp"
-        component={RespHosp}
-        options={{
-          headerShown: true,
-          title: " المستشفيات المتاحة",
         }}
       />
     </Stack.Navigator>
