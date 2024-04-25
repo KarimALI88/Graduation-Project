@@ -21,6 +21,7 @@ const manImage = require("../assets/man-img.png");
 const womenImage = require("../assets/women-img.png");
 
 function Profile({navigation}) {
+  const [isPressed, setIsPressed] = useState(false)
   const [user, setUser] = useState({});
   const [editEmail, setEditEmail] = useState(false);
   const [editUserName, setEditUserName] = useState(false);
@@ -224,9 +225,10 @@ function Profile({navigation}) {
         </View>
         {/* logout button */}
         <View style={styles.logoutView}>
-          <Pressable style={styles.logOut} onPress={logOut}>
+          <Pressable style={[styles.logOut,{backgroundColor : isPressed ? "#071355" : "#900"}]} onPress={logOut} onPressIn={() => setIsPressed(true)}
+          onPressOut={() => setIsPressed(false)}>
             <Text style={styles.logOutText}>تسجيل الخروج  </Text>
-            <MaterialIcons name="logout" size={24} color="black" />
+            <MaterialIcons name="logout" size={24} color="white"/>
           </Pressable>
         </View>
         {/* {emial} */}
@@ -453,7 +455,8 @@ const styles = StyleSheet.create({
   logOutText : {
     fontSize : 18,
     fontWeight: "700",
-    paddingRight: 5
+    paddingRight: 5,
+    color: "white"
   },
   inputsView: {
     backgroundColor: "white",

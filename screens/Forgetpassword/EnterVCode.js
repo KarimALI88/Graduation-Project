@@ -17,8 +17,9 @@ import * as Yup from "yup";
 import { useContext, useState } from "react";
 import AuthContext from "../../context/AuthContext";
 function EnterVCode({ navigation }) {
+  const [isPressed, setIsPressed] = useState(false);
   const [apiMessage, setApiMessage] = useState("");
-  const {setTemporaryToken} = useContext(AuthContext)
+  const { setTemporaryToken } = useContext(AuthContext);
 
   let formValidation = Yup.object({
     resetCode: Yup.string().required("يرجي ادخال كود التاكيد"),
@@ -44,7 +45,7 @@ function EnterVCode({ navigation }) {
         setApiMessage(data.message);
         Toast.error(apiMessage);
       } else {
-        setTemporaryToken(data.token)
+        setTemporaryToken(data.token);
         setApiMessage(data.message);
         Toast.success(apiMessage);
         setTimeout(() => {
@@ -113,8 +114,19 @@ function EnterVCode({ navigation }) {
                   ""
                 )}
               </View>
-              <Pressable onPress={handleSubmit}>
-                <Text style={styles.button}>تسجيل</Text>
+              <Pressable
+                onPress={handleSubmit}
+                onPressIn={() => setIsPressed(true)}
+                onPressOut={() => setIsPressed(false)}
+              >
+                <Text
+                  style={[
+                    styles.button,
+                    { backgroundColor: isPressed ? "#071355" : "#900" },
+                  ]}
+                >
+                  تسجيل
+                </Text>
               </Pressable>
             </ScrollView>
           </View>
@@ -192,7 +204,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     borderRadius: 10,
     fontWeight: "bold",
-    backgroundColor: "#071355",
+    backgroundColor: "#900",
     color: "white",
     fontSize: 20,
     shadowColor: "black",

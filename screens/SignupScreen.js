@@ -19,6 +19,7 @@ import * as Yup from "yup";
 const signupImage = require("../assets/signup-img.png");
 
 export default function Signup({ navigation }) {
+  const [isPressed, setIsPressed] = useState(false);
   const [apiMessage, setApiMessage] = useState("");
   const [gender, setGender] = useState("male");
 
@@ -263,7 +264,7 @@ export default function Signup({ navigation }) {
                   <Text style={styles.label}> النوع </Text>
                 </View>
                 <RNPickerSelect
-                  onValueChange={(value) => setgender(value)}
+                  onValueChange={(value) => setGender(value)}
                   items={[
                     { label: "ذكر", value: "male" },
                     { label: "انثي", value: "female" },
@@ -273,8 +274,18 @@ export default function Signup({ navigation }) {
                   value={gender}
                 />
               </View>
-              <Pressable onPress={handleSubmit}>
-                <Text style={styles.button} type="submit">
+              <Pressable
+                onPress={handleSubmit}
+                onPressIn={() => setIsPressed(true)}
+                onPressOut={() => setIsPressed(false)}
+              >
+                <Text
+                  style={[
+                    styles.button,
+                    { backgroundColor: isPressed ? "#071355" : "#900" },
+                  ]}
+                  type="submit"
+                >
                   تسجيل{" "}
                 </Text>
               </Pressable>
@@ -289,7 +300,7 @@ export default function Signup({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingVertical: StatusBar.currentHeight,
+    // paddingVertical: StatusBar.currentHeight,
     paddingHorizontal: 15,
     backgroundColor: "white",
   },
@@ -348,7 +359,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     borderRadius: 10,
     fontWeight: "bold",
-    backgroundColor: "#071355",
+    backgroundColor: "#900",
     color: "white",
     fontSize: 20,
     shadowColor: "black",

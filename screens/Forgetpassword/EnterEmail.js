@@ -12,53 +12,54 @@ import {
 } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
 import { Formik } from "formik";
-import * as Yup from 'yup'
+import * as Yup from "yup";
 import { useState } from "react";
-import { Toast } from 'toastify-react-native'
+import { Toast } from "toastify-react-native";
 
-
-
-function EnterEmail({navigation}) {
-  const [apiMessage,setApiMessage]=useState('')
-  let formValidation=Yup.object({
-   
-    email:Yup.string().email("الخاص بك بطريقة صحيحة'gmail'يرجى ادخال ").required("الخاص بك'gmail'يرجى ادخال"),
-
-
-  })
-    
+function EnterEmail({ navigation }) {
+  const [isPressed, setIsPressed] = useState(false);
+  const [apiMessage, setApiMessage] = useState("");
+  let formValidation = Yup.object({
+    email: Yup.string()
+      .email("الخاص بك بطريقة صحيحة'gmail'يرجى ادخال ")
+      .required("الخاص بك'gmail'يرجى ادخال"),
+  });
 
   async function emailSubmit(values) {
     try {
-        const response = await fetch('http://192.168.1.9:8000/api/v1/auth/forgotPassword', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-              email:values.email,
-              // values
-            })
-        })
-        const data = await response.json();
-        console.log(data);
-        if(data.status==='success'){
-          setApiMessage(data.message)
-          Toast.success(apiMessage);
-          setTimeout(()=>{navigation.navigate("EnterVCode")},3000)
-        }else{
-          setApiMessage(data.message)
-          Toast.error(apiMessage);
+      const response = await fetch(
+        "http://192.168.1.9:8000/api/v1/auth/forgotPassword",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email: values.email,
+            // values
+          }),
         }
-    } 
-    catch(err){
-      console.log(err)
+      );
+      const data = await response.json();
+      console.log(data);
+      if (data.status === "success") {
+        setApiMessage(data.message);
+        Toast.success(apiMessage);
+        setTimeout(() => {
+          navigation.navigate("EnterVCode");
+        }, 3000);
+      } else {
+        setApiMessage(data.message);
+        Toast.error(apiMessage);
+      }
+    } catch (err) {
+      console.log(err);
     }
-}
+  }
   return (
-      <SafeAreaView style={styles.contanier}>
-        <StatusBar backgroundColor={"#071355"} color={"white"}/>
-        
+    <SafeAreaView style={styles.contanier}>
+      <StatusBar backgroundColor={"#071355"} color={"white"} />
+
       <Formik
         initialValues={{
           email: "",
@@ -66,25 +67,31 @@ function EnterEmail({navigation}) {
         validationSchema={formValidation}
         onSubmit={emailSubmit}
       >
-        {({ handleChange, handleBlur, handleSubmit, values,errors,touched}) => (
+        {({
+          handleChange,
+          handleBlur,
+          handleSubmit,
+          values,
+          errors,
+          touched,
+        }) => (
           <View>
-          
             <ScrollView showsVerticalScrollIndicator={false}>
-            <View style={styles.imageContainer}>
-              <Image
-                source={{
-                  uri: "https://img.freepik.com/free-photo/fun-3d-cartoon-illustration-indian-doctor_183364-114487.jpg?w=360&t=st=1708419125~exp=1708419725~hmac=673a911799f6fc9e5d5bde285346169af5f270a5ef675ceec33f29555b6e401e",
-                }}
-                style={styles.signupImg}
-                resizeMode="contain"
-              />
-            </View>
-            {/* <View>{apiError ? <Text style={{ fontSize: 10, color: 'red' }}>{apiError}</Text> : ""}</View> */}
+              <View style={styles.imageContainer}>
+                <Image
+                  source={{
+                    uri: "https://img.freepik.com/free-photo/fun-3d-cartoon-illustration-indian-doctor_183364-114487.jpg?w=360&t=st=1708419125~exp=1708419725~hmac=673a911799f6fc9e5d5bde285346169af5f270a5ef675ceec33f29555b6e401e",
+                  }}
+                  style={styles.signupImg}
+                  resizeMode="contain"
+                />
+              </View>
+              {/* <View>{apiError ? <Text style={{ fontSize: 10, color: 'red' }}>{apiError}</Text> : ""}</View> */}
               <View style={styles.createAcc}>
                 <FontAwesome name="stethoscope" size={60} color="#900" />
                 <Text style={styles.createAccText}>ادخل البريد الالكتروني</Text>
               </View>
-              
+
               {/* email*/}
               <View style={styles.inputsView}>
                 <View style={styles.labelView}>
@@ -100,16 +107,32 @@ function EnterEmail({navigation}) {
                   onBlur={handleBlur("email")}
                   value={values.email}
                 />
-                {errors.email &&touched.email?<Text style={{ fontSize: 10, color: 'red' }}>{errors.email}</Text>:""}
+                {errors.email && touched.email ? (
+                  <Text style={{ fontSize: 10, color: "red" }}>
+                    {errors.email}
+                  </Text>
+                ) : (
+                  ""
+                )}
               </View>
-              <Pressable onPress={handleSubmit}>
-                 <Text style={styles.button}>تسجيل</Text>
-                </Pressable>
+              <Pressable
+                onPress={handleSubmit}
+                onPressIn={() => setIsPressed(true)}
+                onPressOut={() => setIsPressed(false)}
+              >
+                <Text
+                  style={[
+                    styles.button,
+                    { backgroundColor: isPressed ? "#071355" : "#900" },
+                  ]}
+                >
+                  تسجيل
+                </Text>
+              </Pressable>
             </ScrollView>
           </View>
         )}
       </Formik>
-      
     </SafeAreaView>
   );
 }
@@ -180,7 +203,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     borderRadius: 10,
     fontWeight: "bold",
-    backgroundColor: "#071355",
+    backgroundColor: "#900",
     color: "white",
     fontSize: 20,
     shadowColor: "black",

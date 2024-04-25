@@ -18,8 +18,9 @@ import * as Yup from "yup";
 import AuthContext from "../../context/AuthContext";
 
 export default function ResetPassword({ navigation }) {
+  const [isPressed, setIsPressed] = useState(false);
   const [apiMessage, setApiMessage] = useState("");
-  const {temporaryToken} = useContext(AuthContext)
+  const { temporaryToken } = useContext(AuthContext);
   // const JWT =
   //   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NWUxZGIzOTdmNzg3ZjliMWI3MWViNGUiLCJpYXQiOjE3MDkzMTg4MDIsImV4cCI6MTcxNzk1ODgwMn0.EkfxpObCa6FmyUmvJDFo0_mxQJZS5ZpiUOvsPfACk38";
   let formValidation = Yup.object({
@@ -150,8 +151,18 @@ export default function ResetPassword({ navigation }) {
                   </Text>
                 )}
               </View>
-              <Pressable onPress={handleSubmit}>
-                <Text style={styles.button} type="submit">
+              <Pressable
+                onPress={handleSubmit}
+                onPressIn={() => setIsPressed(true)}
+                onPressOut={() => setIsPressed(false)}
+              >
+                <Text
+                  style={[
+                    styles.button,
+                    { backgroundColor: isPressed ? "#071355" : "#900" },
+                  ]}
+                  type="submit"
+                >
                   تسجيل{" "}
                 </Text>
               </Pressable>
@@ -223,7 +234,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     borderRadius: 10,
     fontWeight: "bold",
-    backgroundColor: "#071355",
+    backgroundColor: "#900",
     color: "white",
     fontSize: 20,
     shadowColor: "black",

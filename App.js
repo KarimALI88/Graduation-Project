@@ -65,6 +65,7 @@ function TabNavigator() {
             name="Profile"
             component={Profile}
             options={{
+              // headerShown: true,
               tabBarLabel: "الصفحه الشخصيه",
               tabBarIcon: ({ color }) => (
                 <Ionicons
@@ -98,6 +99,7 @@ function TabNavigator() {
               tabBarIcon: ({ color }) => (
                 <Ionicons name={"home"} size={27} color={color} />
               ),
+              
             }}
           />
 

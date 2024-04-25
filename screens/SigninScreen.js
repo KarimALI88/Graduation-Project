@@ -18,13 +18,14 @@ import AuthContext from "../context/AuthContext";
 
 // const bg = require("../assets/signin.jpg");
 
-function SigninScreen({navigation}) {
+function SigninScreen({ navigation }) {
+  const [isPressed, setIsPressed] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [successMessage, setSuccessMessage] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
   const [errors, setErrors] = useState({});
-  const {setToken} = useContext(AuthContext)
+  const { setToken } = useContext(AuthContext);
 
   const validateForm = () => {
     let errors = {};
@@ -36,6 +37,7 @@ function SigninScreen({navigation}) {
 
     return Object.keys(errors).length === 0;
   };
+  
   const url = "http://192.168.1.9:8000/api/v1/auth/login";
   const headers = {
     "Content-Type": "application/json",
@@ -65,16 +67,16 @@ function SigninScreen({navigation}) {
 
           // Update AsyncStorage with the token
           await AsyncStorage.setItem("JWT", data.token);
-          setToken(data.token)
+          setToken(data.token);
 
           // Display the success toast message after the state has been updated
-          
-          
-           Toast.success(successMessage)
 
-  
+          Toast.success(successMessage);
+
           setErrorMessage(null);
-          setTimeout(()=>{navigation.navigate("Index")},3000)
+          setTimeout(() => {
+            navigation.navigate("Index");
+          }, 3000);
         } else {
           // Set the error message
           setErrorMessage(data.message);
@@ -91,7 +93,7 @@ function SigninScreen({navigation}) {
     <SafeAreaView style={styles.contanier}>
       {/* <Image source={bg} style={styles.Image} resizeMode="cover" /> */}
       {/* <StatusBar backgroundColor="#3447b2" /> */}
-      <StatusBar backgroundColor={"#071355"} color={"white"}/>
+      <StatusBar backgroundColor={"#071355"} color={"white"} />
       <ScrollView>
         <View style={styles.imageContainer}>
           <Image
@@ -152,21 +154,36 @@ function SigninScreen({navigation}) {
               onPress={() => {
                 navigation.navigate("EnterEmail");
               }}
+              onPressIn={() => setIsPressed(true)}
+              onPressOut={() => setIsPressed(false)}
             >
-              <Text style={styles.signupLink}>هل نسيت كلمة المرور؟</Text>
+              <Text style={[styles.signupLink,{color: isPressed ? "#900" : "black"}]}>هل نسيت كلمة المرور؟</Text>
             </Pressable>
             <Pressable
               onPress={() => {
                 navigation.navigate("Signup");
               }}
+              onPressIn={() => setIsPressed(true)}
+              onPressOut={() => setIsPressed(false)}
             >
-              <Text style={styles.forgetPass}>
+              <Text style={[styles.forgetPass,{color: isPressed ? "#900" : "black"}]}>
                 اذا لم يكن لديك حساب قم بالتسجيل.
               </Text>
             </Pressable>
           </View>
-          <Pressable onPress={handleSubmit}>
-            <Text style={styles.button}>تسجيل </Text>
+          <Pressable
+            onPress={handleSubmit}
+            onPressIn={() => setIsPressed(true)}
+            onPressOut={() => setIsPressed(false)}
+          >
+            <Text
+              style={[
+                styles.button,
+                { backgroundColor: isPressed ? "#071355" : "#900" },
+              ]}
+            >
+              تسجيل{" "}
+            </Text>
           </Pressable>
         </View>
       </ScrollView>
@@ -181,7 +198,7 @@ const styles = StyleSheet.create({
     flex: 1,
     // paddingVertical: StatusBar.currentHeight,
     justifyContent: "center",
-    backgroundColor: "white"
+    backgroundColor: "white",
   },
   imageContainer: {
     justifyContent: "center",
@@ -250,7 +267,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     borderRadius: 10,
     fontWeight: "bold",
-    backgroundColor: "#900",
+    // backgroundColor: "#900",
     color: "white",
     fontSize: 20,
     shadowColor: "black",
@@ -281,11 +298,11 @@ const styles = StyleSheet.create({
   },
   signupLink: {
     marginBottom: 10,
-    fontSize: 16,
+    fontSize: 18,
   },
   forgetPass: {
     marginBottom: 10,
-    fontSize: 16,
+    fontSize: 18,
   },
   errorText: {
     color: "red",

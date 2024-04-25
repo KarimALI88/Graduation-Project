@@ -1,42 +1,95 @@
-import React, { useContext } from "react";
+import React, { useContext, useState, useRef, useEffect } from "react";
 import {
-  View,
   Text,
   StyleSheet,
   Image,
-  Button,
   SafeAreaView,
   StatusBar,
   Pressable,
+  Animated,
 } from "react-native";
 import AuthContext from "../context/AuthContext";
 
 function Index({ navigation }) {
+  const scaleValue = useRef(new Animated.Value(1)).current;
+
   const logo = require("../assets/hompital-Logo.png");
   const { token } = useContext(AuthContext);
+  const [isPressed, setIsPressed] = useState(false);
+
+  // ********************************
+  // animation
+  const startAnimation = () => {
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(scaleValue, {
+          toValue: 1.1,
+          duration: 1500,
+          useNativeDriver: true,
+        }),
+        Animated.timing(scaleValue, {
+          toValue: 1,
+          duration: 1000,
+          useNativeDriver: true,
+        }),
+      ])
+    ).start();
+  };
+
+  const animatedStyle = {
+    transform: [{ scale: scaleValue }],
+  };
+
+  useEffect(() => {
+    startAnimation();
+  }, []);
+
+  // ********************************
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor={"#071355"} color={"white"} />
       <Text style={styles.title}>Hompital</Text>
-      <Image style={styles.image} source={logo} resizeMode="contain" />
+      <Animated.View style={animatedStyle}>
+        <Image style={styles.image} source={logo} resizeMode="contain" />
+      </Animated.View>
 
       {/* <Text style={styles.text}>
         دلوقتي تقدر تعرف فين اقرب مستشفي بتعالج حالتك من بيتك وكمان بنساعد المسعفين
         فانهم يوفروا وقت ويروحوا القرب مستشفي متاحه ومتاح فيها مكان
       </Text> */}
-      {token ? <Pressable
+      {token ? (
+        <Pressable
           onPress={() => {
             navigation.navigate("ReqHospital");
           }}
+          onPressIn={() => setIsPressed(true)}
+          onPressOut={() => setIsPressed(false)}
         >
-          <Text style={styles.button}>طلب مستشفي</Text>
-        </Pressable> : (
+          <Text
+            style={[
+              styles.button,
+              { backgroundColor: isPressed ? "#071355" : "#900" },
+            ]}
+          >
+            طلب مستشفي
+          </Text>
+        </Pressable>
+      ) : (
         <Pressable
           onPress={() => {
             navigation.navigate("SigninScreen");
           }}
+          onPressIn={() => setIsPressed(true)}
+          onPressOut={() => setIsPressed(false)}
         >
-          <Text style={styles.button}>تسجيل الدخول</Text>
+          <Text
+            style={[
+              styles.button,
+              { backgroundColor: isPressed ? "#071355" : "#900" },
+            ]}
+          >
+            تسجيل الدخول
+          </Text>
         </Pressable>
       )}
     </SafeAreaView>
@@ -77,7 +130,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     borderRadius: 10,
     fontWeight: "bold",
-    backgroundColor: "#900",
+    // backgroundColor: "#900",
     color: "white",
     fontSize: 20,
     width: 300,

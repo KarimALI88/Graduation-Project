@@ -9,9 +9,10 @@ import {
   StyleSheet,
   Pressable,
   ActivityIndicator,
-  RefreshControl 
+  RefreshControl,
+  Animated,
 } from "react-native";
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import { FontAwesome } from "@expo/vector-icons";
 import RNPickerSelect from "react-native-picker-select";
 import MapView, { Marker } from "react-native-maps";
@@ -24,7 +25,10 @@ import ModalContext from "../context/ModalContext";
 
 const reqHospImg = require("../assets/hospital-form.png");
 
-export default function ReqHospital({navigation}) {
+export default function ReqHospital({ navigation }) {
+  const scaleValue = useRef(new Animated.Value(1)).current;
+
+  const [isPressed, setIsPressed] = useState(false);
   const [location, setLocation] = useState({
     coords: {
       latitude: 30.158392910140286,
@@ -35,11 +39,39 @@ export default function ReqHospital({navigation}) {
   const [section, setSection] = useState("خاص أو حكومي");
   const [reqLocation, setReqLocation] = useState(false);
   // const [visible, setVisible] = useState(false);
-  const {visible, setVisible} = useContext(ModalContext)
+  const { visible, setVisible } = useContext(ModalContext);
   const [loading, setLoading] = useState(false);
   const [hospitals, setHospitals] = useState({});
   const [refreshing, setRefreshing] = useState(false);
-  const {token} = useContext(AuthContext)
+  const { token } = useContext(AuthContext);
+  // ********************************
+  // animation
+  const startAnimation = () => {
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(scaleValue, {
+          toValue: 1.3,
+          duration: 500,
+          useNativeDriver: true,
+        }),
+        Animated.timing(scaleValue, {
+          toValue: 1,
+          duration: 1000,
+          useNativeDriver: true,
+        }),
+      ])
+    ).start();
+  };
+
+  const animatedStyle = {
+    transform: [{ scale: scaleValue }],
+  };
+
+  useEffect(() => {
+    startAnimation();
+  }, [reqLocation]);
+
+  // ********************************
   const url = "http://192.168.1.9:8000/api/v1/select";
   // const JWT =
   //   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NWNiYmI3MzBmMzBlOWY5MDhkM2MxNWQiLCJpYXQiOjE3MDk0OTI2NTcsImV4cCI6MTcxODEzMjY1N30.Q96G9xHJMwiH9-zjLHwdFkPrBwgAN9HN3fMHlkNW57k";
@@ -91,8 +123,8 @@ export default function ReqHospital({navigation}) {
 
   const onRefresh = () => {
     setRefreshing(true);
-    setReqLocation(false)
-    setLoading(false)
+    setReqLocation(false);
+    setLoading(false);
     // Perform your refresh logic here, such as fetching new data from an API
 
     setTimeout(() => {
@@ -128,7 +160,7 @@ export default function ReqHospital({navigation}) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar backgroundColor={"#071355"} color={"white"}/>
+      <StatusBar backgroundColor={"#071355"} color={"white"} />
       <ScrollView
         showsVerticalScrollIndicator={false}
         refreshControl={
@@ -270,7 +302,9 @@ export default function ReqHospital({navigation}) {
             ) : (
               <View style={styles.locationImg}>
                 <Pressable onPress={() => setReqLocation(true)}>
-                  <Entypo name="location-pin" size={100} color="white" />
+                  <Animated.View style={animatedStyle}>
+                    <Entypo name="location-pin" size={100} color="white" />
+                  </Animated.View>
                 </Pressable>
               </View>
             )}
@@ -285,8 +319,19 @@ export default function ReqHospital({navigation}) {
               style={{ marginVertical: 20 }}
             />
           ) : (
-            <Pressable onPress={getHospitals}>
-              <Text style={styles.button}>طلب</Text>
+            <Pressable
+              onPress={getHospitals}
+              onPressIn={() => setIsPressed(true)}
+              onPressOut={() => setIsPressed(false)}
+            >
+              <Text
+                style={[
+                  styles.button,
+                  { backgroundColor: isPressed ? "#071355" : "#900" },
+                ]}
+              >
+                طلب
+              </Text>
             </Pressable>
           )}
         </View>
@@ -341,8 +386,9 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     borderRadius: 10,
     fontWeight: "bold",
-    backgroundColor: "white",
-    color: "#071355",
+    backgroundColor: "#900",
+    color: "white",
+    fontSize: 20,
     shadowColor: "black",
     shadowOffset: {
       width: 6,
@@ -352,6 +398,6 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 10,
     textAlign: "center",
-    marginVertical: 20,
+    marginVertical: 30,
   },
 });
