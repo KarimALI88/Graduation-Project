@@ -11,21 +11,39 @@ import {
   ActivityIndicator,
   RefreshControl,
   Animated,
+  Platform,
 } from "react-native";
-import React, { useState, useEffect, useContext, useRef } from "react";
+import React, {
+  useState,
+  useEffect,
+  useContext,
+  useRef,
+  useCallback,
+} from "react";
 import { FontAwesome } from "@expo/vector-icons";
 import RNPickerSelect from "react-native-picker-select";
 import MapView, { Marker } from "react-native-maps";
 import * as Location from "expo-location";
 import RespHosp from "../components/RespHosp";
-import hospitals from "../json-files/hospitals.json";
 import { Entypo } from "@expo/vector-icons";
 import AuthContext from "../context/AuthContext";
 import ModalContext from "../context/ModalContext";
-
+import * as Device from "expo-device";
+import * as Notifications from "expo-notifications";
+import isEqual from "lodash/isEqual";
+// import { Notifications } from 'expo';
 const reqHospImg = require("../assets/hospital-form.png");
 
+// Notifications.setNotificationHandler({
+//   handleNotification: async () => ({
+//     shouldShowAlert: true,
+//     shouldPlaySound: true,
+//     shouldSetBadge: false,
+//   }),
+// });
+
 export default function ReqHospital({ navigation }) {
+  const [expoPushToken, setExpoPushToken] = useState();
   const scaleValue = useRef(new Animated.Value(1)).current;
 
   const [isPressed, setIsPressed] = useState(false);
@@ -36,15 +54,244 @@ export default function ReqHospital({ navigation }) {
     },
   });
   const [disease, setDisease] = useState("يصعب التشخيص");
+  // const { disease } = useContext(AuthContext);
+  // const { setDisease } = useContext(AuthContext);
   const [section, setSection] = useState("خاص أو حكومي");
+  // const { section } = useContext(AuthContext);
+  // const { setSection } = useContext(AuthContext);
   const [reqLocation, setReqLocation] = useState(false);
-  // const [visible, setVisible] = useState(false);
+  const [notification, setNotification] = useState(false);
   const { visible, setVisible } = useContext(ModalContext);
   const [loading, setLoading] = useState(false);
-  const [hospitals, setHospitals] = useState({});
+  const [hospitals, setHospitals] = useState([]);
+  // const { hospitals } = useContext(AuthContext);
+  // const { setHospitals } = useContext(AuthContext);
   const [refreshing, setRefreshing] = useState(false);
   const { token } = useContext(AuthContext);
   // ********************************
+  // ********* notification code ***********************
+  // const sendNotification = async () => {
+  //   console.log("send notification");
+  //   const message = {
+  //     to: expoPushToken,
+  //     sound: "default",
+  //     title: "شغلت النوتيفيكيشن يا صيع يا صيع",
+  //     body: "بس فرونت بس بصراحه",
+  //   };
+  //   await fetch("https://exp.host/--/api/v2/push/send", {
+  //     method: "POST",
+  //     headers: {
+  //       host: "exp.host",
+  //       accept: "application/json",
+  //       "accept-encoding": "gzip, deflate",
+  //       "content-type": "application/json",
+  //     },
+  //     body: JSON.stringify(message),
+  //   });
+  // };
+
+  // useEffect(() => {
+  //   console.log("registration");
+  //   registerForPushNotificationsAsync()
+  //     .then((token) => {
+  //       console.log("token is ", token);
+  //       setExpoPushToken(token);
+  //     })
+  //     .catch((err) => console.log(err));
+  // }, []);
+
+  // async function registerForPushNotificationsAsync() {
+  //   let token;
+
+  //   if (Platform.OS === "android") {
+  //     await Notifications.setNotificationChannelAsync("default", {
+  //       name: "default",
+  //       importance: Notifications.AndroidImportance.MAX,
+  //       vibrationPattern: [0, 250, 250, 250],
+  //       lightColor: "#FF231F7C",
+  //     });
+  //   }
+
+  //   if (Device.isDevice) {
+  //     const { status: existingStatus } =
+  //       await Notifications.getPermissionsAsync();
+  //     let finalStatus = existingStatus;
+  //     if (existingStatus !== "granted") {
+  //       const { status } = await Notifications.requestPermissionsAsync();
+  //       finalStatus = status;
+  //     }
+  //     if (finalStatus !== "granted") {
+  //       alert("Failed to get push token for push notification!");
+  //       return;
+  //     }
+  //     // Learn more about projectId:
+  //     // https://docs.expo.dev/push-notifications/push-notifications-setup/#configure-projectid
+  //     token = (
+  //       await Notifications.getExpoPushTokenAsync({
+  //         projectId: "f67db72d-7652-45fc-80c0-70a27f8c5fae",
+  //       })
+  //     ).data;
+  //     console.log(token);
+  //   } else {
+  //     alert("Must use physical device for Push Notifications");
+  //   }
+
+  //   return token;
+  // }
+
+  useEffect(() => {
+    registerForPushNotificationsAsync()
+      .then((token) => {
+        setExpoPushToken(token);
+      })
+      .catch((err) => console.log(err));
+  }, []);
+
+  async function registerForPushNotificationsAsync() {
+    let token;
+
+    if (Platform.OS === "android") {
+      await Notifications.setNotificationChannelAsync("default", {
+        name: "default",
+        importance: Notifications.AndroidImportance.MAX,
+        vibrationPattern: [0, 250, 250, 250],
+        lightColor: "#FF231F7C",
+      });
+    }
+
+    if (Device.isDevice) {
+      const { status: existingStatus } =
+        await Notifications.getPermissionsAsync();
+      let finalStatus = existingStatus;
+      if (existingStatus !== "granted") {
+        const { status } = await Notifications.requestPermissionsAsync();
+        finalStatus = status;
+      }
+      if (finalStatus !== "granted") {
+        alert("Failed to get push token for push notification!");
+        return;
+      }
+      token = (
+        await Notifications.getExpoPushTokenAsync({
+          projectId: "f67db72d-7652-45fc-80c0-70a27f8c5fae",
+        })
+      ).data;
+    } else {
+      alert("Must use physical device for Push Notifications");
+    }
+
+    return token;
+  }
+
+  // Notifications.setNotificationHandler({
+  //   handleNotification: async () => ({
+  //     shouldShowAlert: true,
+  //     shouldPlaySound: true,
+  //     shouldSetBadge: false,
+  //   }),
+  // });
+
+  Notifications.setNotificationHandler({
+    handleNotification: async (notification) => {
+      const { data, ...rest } = notification;
+      return {
+        shouldShowAlert: true,
+        shouldPlaySound: true,
+        shouldSetBadge: false,
+        // Pass the custom data along with the notification
+        // This will include your custom icon
+        ...rest,
+        ...data,
+      };
+    },
+  });
+
+  const sendNotification = async () => {
+    console.log("Sending notification...");
+
+    // const message = {
+    //   to: expoPushToken,
+    //   sound: "default",
+    //   title: "شغلت النوتيفيكيشن يا صيع يا صيع",
+    //   body: "بس فرونت بس بصراحه",
+    // };
+
+    const message = {
+      to: expoPushToken,
+      sound: "default",
+      title: "Homepital Application",
+      body: "تم تحديث المستشفيات المتاحة",
+      // Add the following line to include your custom icon
+      // You can replace 'logo.png' with the path to your custom icon file
+      // Make sure to place your custom icon in the assets folder of your project
+      // and update the path accordingly
+      data: { image: require("../assets/hompital-Logo.png") },
+    };
+
+    try {
+      await fetch("https://exp.host/--/api/v2/push/send", {
+        method: "POST",
+        headers: {
+          host: "exp.host",
+          accept: "application/json",
+          "accept-encoding": "gzip, deflate",
+          "content-type": "application/json",
+        },
+        body: JSON.stringify(message),
+      });
+      console.log("Notification sent successfully!");
+    } catch (error) {
+      console.error("Error sending notification:", error);
+    }
+  };
+
+  // ***************************************************
+  // ************ scheduled requests **************************
+
+  // Define the interval for scheduled requests (adjust as needed)
+  const pollingInterval = 1 * 60 * 1000; // 5 minutes in milliseconds
+
+  useEffect(() => {
+    const interval = setInterval(async () => {
+      // await sendNotification()
+      try {
+        const data = await fetch(url, {
+          method: "POST",
+          headers: headers,
+          body: JSON.stringify({
+            section: section,
+            case: disease,
+            latitude: location.latitude,
+            longitude: location.longitude,
+          }),
+        });
+        console.log("disease : ", disease);
+        console.log("section : ", section);
+
+        const response = await data.json();
+        console.log("data inside interval : ", response);
+
+        setHospitals((prevHospitals) => {
+          console.log("prev hosp", prevHospitals);
+          if (!isEqual(response, prevHospitals)) {
+            setNotification(true);
+            console.log("data changed");
+            return response;
+          } else {
+            setNotification(false);
+            console.log("data didn't change");
+            return prevHospitals;
+          }
+        });
+      } catch (error) {
+        console.error("Error fetching hospitals:", error);
+      }
+    }, pollingInterval);
+
+    return () => clearInterval(interval);
+  }, [section,disease,location]);
+
+  // **********************************************************
   // animation
   const startAnimation = () => {
     Animated.loop(
@@ -72,9 +319,15 @@ export default function ReqHospital({ navigation }) {
   }, [reqLocation]);
 
   // ********************************
-  const url = "http://192.168.1.9:8000/api/v1/select";
-  // const JWT =
-  //   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NWNiYmI3MzBmMzBlOWY5MDhkM2MxNWQiLCJpYXQiOjE3MDk0OTI2NTcsImV4cCI6MTcxODEzMjY1N30.Q96G9xHJMwiH9-zjLHwdFkPrBwgAN9HN3fMHlkNW57k";
+  useEffect(() => {
+    if (notification) {
+      sendNotification();
+    }
+  }, [notification]);
+
+  // sendNotification()
+  const url = "http://192.168.1.7:8000/api/v1/select";
+
   const headers = {
     "Content-Type": "application/json",
     Authorization: "Bearer " + token,
@@ -96,10 +349,8 @@ export default function ReqHospital({ navigation }) {
   };
 
   const getHospitals = async () => {
-    // e.preventDefault(); // Prevent default form submission behavior
-
     try {
-      await setLoading(true);
+      setLoading(true);
       const response = await fetch(url, options);
       const data = await response.json();
 

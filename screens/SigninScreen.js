@@ -9,6 +9,7 @@ import {
   StyleSheet,
   StatusBar,
   Pressable,
+  
 } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -38,7 +39,7 @@ function SigninScreen({ navigation }) {
     return Object.keys(errors).length === 0;
   };
   
-  const url = "http://192.168.1.9:8000/api/v1/auth/login";
+  const url = "http://192.168.1.7:8000/api/v1/auth/login";
   const headers = {
     "Content-Type": "application/json",
     Authorization: "Bearer " + AsyncStorage.getItem("JWT"),
