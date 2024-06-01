@@ -23,8 +23,8 @@ function SigninScreen({ navigation }) {
   const [isPressed, setIsPressed] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [successMessage, setSuccessMessage] = useState(null);
-  const [errorMessage, setErrorMessage] = useState(null);
+  const [successMessage, setSuccessMessage] = useState("تم تسجيل الدخول بنجاح");
+  const [errorMessage, setErrorMessage] = useState("خطأ في الايميل او كلمة المرور");
   const [errors, setErrors] = useState({});
   const { setToken } = useContext(AuthContext);
 
@@ -35,7 +35,7 @@ function SigninScreen({ navigation }) {
     if (!password) errors.password = "يرجي ادخال كلمة المرور";
 
     setErrors(errors);
-
+ 
     return Object.keys(errors).length === 0;
   };
   

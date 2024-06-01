@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
-import { MaterialIcons } from '@expo/vector-icons';
+import { MaterialIcons } from "@expo/vector-icons";
 import { Feather } from "@expo/vector-icons";
 import { useContext, useState } from "react";
 import { useEffect } from "react";
@@ -20,18 +20,18 @@ import AuthContext from "../context/AuthContext";
 const manImage = require("../assets/man-img.png");
 const womenImage = require("../assets/women-img.png");
 
-function Profile({navigation}) {
-  const [isPressed, setIsPressed] = useState(false)
+function Profile({ navigation }) {
+  const [isPressed, setIsPressed] = useState(false);
   const [user, setUser] = useState({});
   const [editEmail, setEditEmail] = useState(false);
   const [editUserName, setEditUserName] = useState(false);
   const [phone, setPhone] = useState(false);
   const [age, setAge] = useState(false);
   const [editPassword, setEditPassword] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("تم التحديث بنجاح");
   const [errorMessage, setErrorMessage] = useState("");
-  const {token} = useContext(AuthContext)
-  const {setToken} = useContext(AuthContext)
+  const { token } = useContext(AuthContext);
+  const { setToken } = useContext(AuthContext);
   const [password, setPassword] = useState({
     currentPassword: "",
     updatedPassword: "",
@@ -39,9 +39,9 @@ function Profile({navigation}) {
   });
   // console.log(token);
 
-  const url = "http://192.168.1.9:8000/api/v1/users/getMe";
-  const url2 = "http://192.168.1.9:8000/api/v1/users/updateMe";
-  const url3 = "http://192.168.1.9:8000/api/v1/users/chamgeMyPassword";
+  const url = "http://192.168.1.7:8000/api/v1/users/getMe";
+  const url2 = "http://192.168.1.7:8000/api/v1/users/updateMe";
+  const url3 = "http://192.168.1.7:8000/api/v1/users/chamgeMyPassword";
   // const JWT =
   //   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NWNiYmI3MzBmMzBlOWY5MDhkM2MxNWQiLCJpYXQiOjE3MDk1ODE1NDcsImV4cCI6MTcxODIyMTU0N30.zszPP723QEKMmT5Rer0yGkKYQiSyHjONW_uE2heCgjs";
   const headers = {
@@ -107,16 +107,16 @@ function Profile({navigation}) {
 
       const data = await response.json();
 
-      if (data) {
-        console.log("Update successful");
-        console.log(data);
-        setSuccessMessage("تم التحديث بنجاح");
-        Toast.success(successMessage);
-      } else {
+      if (data.errors) {
         console.log("Update failed");
         console.log(data.errors[0].msg);
         setErrorMessage(data.errors[0].msg);
         Toast.error(errorMessage);
+      } else {
+        console.log("Update successful");
+        console.log(data);
+        setSuccessMessage("تم التحديث بنجاح");
+        Toast.success(successMessage);
       }
     } catch (error) {
       console.error("Error during update:", error);
@@ -137,12 +137,21 @@ function Profile({navigation}) {
 
       const data = await response.json();
 
-      if (data) {
+      if (data.errors) {
+        console.log("Update failed");
+        console.log(data);
+        Toast.error(
+          data.errors.map(err=>err.msg)
+        );
+      }else if(data.error){
+        Toast.error(
+          data.error
+        );
+      }else {
         console.log("Update successful");
         console.log(data);
-      } else {
-        console.log("Update failed");
-        console.log(data.message);
+        setSuccessMessage("تم التحديث بنجاح");
+        Toast.success(successMessage);
       }
     } catch (error) {
       console.error("Error during update:", error);
@@ -200,16 +209,16 @@ function Profile({navigation}) {
 
   const logOut = () => {
     console.log("logout");
-    setToken(null)
-    navigation.navigate("Index")
-  }
+    setToken(null);
+    // navigation.navigate("Index");
+  };
   return (
     <View style={styles.container}>
-      <StatusBar backgroundColor={"#071355"} color={"white"}/>
+      <StatusBar backgroundColor={"#071355"} color={"white"} />
       <ScrollView>
         {/* image */}
         <View style={styles.profileImgContainer}>
-          {user.gender === "male" ? (
+          {user.gender === "Male" ? (
             <Image
               source={manImage}
               style={styles.profileImg}
@@ -225,10 +234,17 @@ function Profile({navigation}) {
         </View>
         {/* logout button */}
         <View style={styles.logoutView}>
-          <Pressable style={[styles.logOut,{backgroundColor : isPressed ? "#071355" : "#900"}]} onPress={logOut} onPressIn={() => setIsPressed(true)}
-          onPressOut={() => setIsPressed(false)}>
-            <Text style={styles.logOutText}>تسجيل الخروج  </Text>
-            <MaterialIcons name="logout" size={24} color="white"/>
+          <Pressable
+            style={[
+              styles.logOut,
+              { backgroundColor: isPressed ? "#071355" : "#900" },
+            ]}
+            onPress={logOut}
+            onPressIn={() => setIsPressed(true)}
+            onPressOut={() => setIsPressed(false)}
+          >
+            <Text style={styles.logOutText}>تسجيل الخروج </Text>
+            <MaterialIcons name="logout" size={24} color="white" />
           </Pressable>
         </View>
         {/* {emial} */}
@@ -345,8 +361,8 @@ function Profile({navigation}) {
               style={styles.input}
               placeholder="العمر"
               placeholderTextColor={"#071355"}
-              keyboardType="number-pad"
-              value={user.age}
+              keyboardType="phone-pad"
+              value={String(user.age)} // Ensure the value is a string
               onChangeText={(text) => setUser({ ...user, age: text })}
             />
           )}
@@ -448,15 +464,15 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 13,
   },
-  logoutView :{
+  logoutView: {
     flexDirection: "row-reverse",
     justifyContent: "flex-start",
   },
-  logOutText : {
-    fontSize : 18,
+  logOutText: {
+    fontSize: 18,
     fontWeight: "700",
     paddingRight: 5,
-    color: "white"
+    color: "white",
   },
   inputsView: {
     backgroundColor: "white",

@@ -27,8 +27,8 @@ export default function ResetPassword({ navigation }) {
     newPassword: Yup.string()
       .required("يرجى ادخال كلمة المرور")
       .matches(
-        /^[A-Z][\w @]{5,8}$/,
-        "كلمة المرور يجب أن تحتوي على حرف كبير وحرف خاص"
+        /^(?=.*[!@#$%^&*(),.?":{}|<>])(?=.*[A-Z]).{6,}$/,
+        "يجب ان تحتوي كلمة المرور علي ستة أحرف علي الاقل وحرف كبير وحرف خاص ($,@,&,!)"
       ),
     passwordConfirm: Yup.string()
       .required("يرجي تاكيد كلمه المرور")
@@ -38,7 +38,7 @@ export default function ResetPassword({ navigation }) {
   async function newPasswordSubmit(values) {
     try {
       const response = await fetch(
-        "http://192.168.1.9:8000/api/v1/auth/resetPassword",
+        "http://192.168.1.7:8000/api/v1/auth/resetPassword",
         {
           method: "PUT",
           headers: {
@@ -54,7 +54,7 @@ export default function ResetPassword({ navigation }) {
       const data = await response.json();
       console.log(data);
       if (data) {
-        setApiMessage(data.message);
+        setApiMessage(data);
         Toast.success(apiMessage);
         setTimeout(() => {
           navigation.navigate("SigninScreen");

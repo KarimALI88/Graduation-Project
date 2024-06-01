@@ -49,8 +49,8 @@ export default function ReqHospital({ navigation }) {
   const [isPressed, setIsPressed] = useState(false);
   const [location, setLocation] = useState({
     coords: {
-      latitude: 30.158392910140286,
-      longitude: 31.62863789393309,
+      latitude: 30.0308,
+      longitude: 31.2315,
     },
   });
   const [disease, setDisease] = useState("يصعب التشخيص");
@@ -249,47 +249,55 @@ export default function ReqHospital({ navigation }) {
   // ************ scheduled requests **************************
 
   // Define the interval for scheduled requests (adjust as needed)
-  const pollingInterval = 1 * 60 * 1000; // 5 minutes in milliseconds
+  // const pollingInterval = 1 * 60 * 1000; // 1 minutes in milliseconds
+  // const stopPollingAfter = 5 * 60 * 1000; // 3 minutes in milliseconds
+  // useEffect(() => {
+  //   const interval = setInterval(async () => {
+  //     // await sendNotification()
+  //     try {
+  //       const data = await fetch(url, {
+  //         method: "POST",
+  //         headers: headers,
+  //         body: JSON.stringify({
+  //           section: section,
+  //           case: disease,
+  //           latitude: location.latitude,
+  //           longitude: location.longitude,
+  //         }),
+  //       });
+  //       console.log("disease : ", disease);
+  //       console.log("section : ", section);
 
-  useEffect(() => {
-    const interval = setInterval(async () => {
-      // await sendNotification()
-      try {
-        const data = await fetch(url, {
-          method: "POST",
-          headers: headers,
-          body: JSON.stringify({
-            section: section,
-            case: disease,
-            latitude: location.latitude,
-            longitude: location.longitude,
-          }),
-        });
-        console.log("disease : ", disease);
-        console.log("section : ", section);
+  //       const response = await data.json();
+  //       console.log("data inside interval : ", response);
 
-        const response = await data.json();
-        console.log("data inside interval : ", response);
+  //       setHospitals((prevHospitals) => {
+  //         console.log("prev hosp", prevHospitals);
+  //         if (!isEqual(response, prevHospitals)) {
+  //           setNotification(true);
+  //           console.log("data changed");
+  //           return response;
+  //         } else {
+  //           setNotification(false);
+  //           console.log("data didn't change");
+  //           return prevHospitals;
+  //         }
+  //       });
+  //     } catch (error) {
+  //       console.error("Error fetching hospitals:", error);
+  //     }
+  //   }, pollingInterval);
 
-        setHospitals((prevHospitals) => {
-          console.log("prev hosp", prevHospitals);
-          if (!isEqual(response, prevHospitals)) {
-            setNotification(true);
-            console.log("data changed");
-            return response;
-          } else {
-            setNotification(false);
-            console.log("data didn't change");
-            return prevHospitals;
-          }
-        });
-      } catch (error) {
-        console.error("Error fetching hospitals:", error);
-      }
-    }, pollingInterval);
+  //   const timeout = setTimeout(() => {
+  //     clearInterval(interval);
+  //     console.log("Polling stopped after 3 minutes");
+  //   }, stopPollingAfter);
 
-    return () => clearInterval(interval);
-  }, [section,disease,location]);
+  //   return () => {
+  //     clearInterval(interval);
+  //     clearTimeout(timeout);
+  //   };
+  // }, [section, disease, location]);
 
   // **********************************************************
   // animation
@@ -402,6 +410,7 @@ export default function ReqHospital({ navigation }) {
           console.log(location);
         } catch (error) {
           console.log("Error getting current position:", error);
+          // setReqLocation(false)
         }
       })();
     } else {

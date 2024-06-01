@@ -34,9 +34,9 @@ export default function Signup({ navigation }) {
     password: Yup.string()
       .required("يرجى ادخال كلمة المرور")
       .matches(
-        /^[A-Z][\w @]{5,8}$/,
-        "كلمة المرور يجب أن تحتوي على حرف كبير وحرف خاص"
-      ),
+        /^(?=.*[!@#$%^&*(),.?":{}|<>])(?=.*[A-Z]).{6,}$/,
+        "يجب ان تحتوي كلمة المرور علي ستة أحرف علي الاقل وحرف كبير وحرف خاص ($,@,&,!)"
+      ), 
     passwordConfirm: Yup.string()
       .required("يرجي تاكيد كلمه المرور")
       .oneOf([Yup.ref("password")], "تأكيد كلمة المرور غير صحيح"),
@@ -50,7 +50,7 @@ export default function Signup({ navigation }) {
     console.log("submit");
     try {
       const response = await fetch(
-        "http://192.168.1.9:8000/api/v1/auth/signup",
+        "http://192.168.1.7:8000/api/v1/auth/signup",
         {
           method: "POST",
           headers: {
@@ -76,7 +76,9 @@ export default function Signup({ navigation }) {
       ) {
         setApiMessage(data.errors.msg);
         Toast.error(apiMessage);
+        console.log("error in registration",data);
       } else {
+        console.log("successsssss",data);
         Toast.success("تم انشاء حساب ");
         setTimeout(() => {
           navigation.navigate("SigninScreen");
@@ -135,12 +137,19 @@ export default function Signup({ navigation }) {
                 </View>
                 <TextInput
                   style={styles.input}
-                  placeholder=" كريم علي "
+                  placeholder="اسم المستخدم"
                   placeholderTextColor={"#071355"}
                   onChangeText={handleChange("userName")}
                   onBlur={handleBlur("userName")}
                   value={values.userName}
                 />
+                {errors.userName && touched.userName ? (
+                  <Text style={{ fontSize: 10, color: "red" }}>
+                    {errors.userName}
+                  </Text>
+                ) : (
+                  ""
+                )}
               </View>
               {/* age*/}
               <View style={styles.inputsView}>
