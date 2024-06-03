@@ -16,9 +16,18 @@ import { Image } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { useContext } from "react";
 import ModalContext from "../context/ModalContext";
+import {
+  useFonts,
+  MarkaziText_400Regular,
+  MarkaziText_700Bold,
+} from "@expo-google-fonts/markazi-text";
 
 export default function RespHosp({ hospitals, visible }) {
-  const {setVisible} = useContext(ModalContext)
+  let [fontsLoaded] = useFonts({
+    MarkaziText_400Regular,
+    MarkaziText_700Bold,
+  });
+  const { setVisible } = useContext(ModalContext);
   // const navigation = useNavigation();
   const hospImg = require("../assets/hospital-icon.png");
 
@@ -34,7 +43,7 @@ export default function RespHosp({ hospitals, visible }) {
         presentationStyle="pageSheet"
         onRequestClose={() => (visible = true)}
       >
-        <Pressable onPress={()=> setVisible(false)}>
+        <Pressable onPress={() => setVisible(false)}>
           <AntDesign
             name="closecircle"
             size={24}
@@ -96,7 +105,10 @@ export default function RespHosp({ hospitals, visible }) {
                   </View>
                   <View style={styles.subTitle}>
                     <Text style={styles.cardText}>
-                      سوف تكون متاحة خلال: {item.availabilityTime}
+                      متوقع تكون متاحة خلال:{" "}
+                      {item.availabilityTime == 0
+                        ? "لحظات"
+                        : `${item.availabilityTime} minutes`}
                     </Text>
                     <Entypo name="time-slot" size={30} color="white" />
                   </View>
@@ -116,7 +128,9 @@ export default function RespHosp({ hospitals, visible }) {
               ItemSeparatorComponent={() => (
                 <View style={{ height: 16 }}></View>
               )}
-              ListEmptyComponent={<Text>لا يوجد مستشفيات سوف تكون متاحة قريبا</Text>}
+              ListEmptyComponent={
+                <Text>لا يوجد مستشفيات سوف تكون متاحة قريبا</Text>
+              }
               ListHeaderComponent={
                 <Text style={styles.headerText}>
                   مستشقيات سوف تكون متاحة قريبا :{" "}
@@ -152,7 +166,7 @@ const styles = StyleSheet.create({
     marginVertical: 5,
   },
   card: {
-    backgroundColor: "#071355",
+    backgroundColor: "#76b49f",
     color: "white",
     paddingHorizontal: 10,
     paddingVertical: 10,
@@ -168,23 +182,26 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     color: "white",
     width: 220,
+    fontFamily: "MarkaziText_700Bold",
   },
   cardText: {
-    color: "#B2BEB5",
+    color: "black",
     textAlign: "right",
     marginHorizontal: 10,
     marginVertical: 10,
     fontSize: 24,
     fontWeight: "600",
+    fontFamily: "MarkaziText_400Regular",
   },
   headerText: {
     fontSize: 24,
     fontWeight: "600",
-    color: "#071355",
+    color: "#76b49f",
     textAlign: "center",
     marginBottom: 18,
     marginTop: 18,
     paddingHorizontal: 18,
+    fontFamily: "MarkaziText_700Bold",
   },
   footerText: {
     fontSize: 24,
@@ -193,6 +210,7 @@ const styles = StyleSheet.create({
     marginBottom: 18,
     paddingHorizontal: 18,
     fontWeight: "600",
-    color: "#071355",
+    color: "#76b49f",
+    fontFamily: "MarkaziText_700Bold",
   },
 });

@@ -16,11 +16,16 @@ import { useContext, useState } from "react";
 import { useEffect } from "react";
 import { Toast } from "toastify-react-native";
 import AuthContext from "../context/AuthContext";
+import { useFonts, MarkaziText_400Regular, MarkaziText_700Bold } from '@expo-google-fonts/markazi-text';
 
 const manImage = require("../assets/man-img.png");
 const womenImage = require("../assets/women-img.png");
 
 function Profile({ navigation }) {
+  let [fontsLoaded] = useFonts({
+    MarkaziText_400Regular,
+    MarkaziText_700Bold,
+  });
   const [isPressed, setIsPressed] = useState(false);
   const [user, setUser] = useState({});
   const [editEmail, setEditEmail] = useState(false);
@@ -39,9 +44,9 @@ function Profile({ navigation }) {
   });
   // console.log(token);
 
-  const url = "http://192.168.1.7:8000/api/v1/users/getMe";
-  const url2 = "http://192.168.1.7:8000/api/v1/users/updateMe";
-  const url3 = "http://192.168.1.7:8000/api/v1/users/chamgeMyPassword";
+  const url = "http://192.168.1.6:8000/api/v1/users/getMe";
+  const url2 = "http://192.168.1.6:8000/api/v1/users/updateMe";
+  const url3 = "http://192.168.1.6:8000/api/v1/users/chamgeMyPassword";
   // const JWT =
   //   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NWNiYmI3MzBmMzBlOWY5MDhkM2MxNWQiLCJpYXQiOjE3MDk1ODE1NDcsImV4cCI6MTcxODIyMTU0N30.zszPP723QEKMmT5Rer0yGkKYQiSyHjONW_uE2heCgjs";
   const headers = {
@@ -140,14 +145,14 @@ function Profile({ navigation }) {
       if (data.errors) {
         console.log("Update failed");
         console.log(data);
-        Toast.error(
-          data.errors.map(err=>err.msg)
-        );
-      }else if(data.error){
-        Toast.error(
-          data.error
-        );
-      }else {
+        Toast.error(data.errors.map((err) => err.msg).join('\n'));
+      } else if (data.error) {
+        Toast.error(data.error, {
+          style: {
+            maxWidth: '90%'
+          },
+        });
+      } else {
         console.log("Update successful");
         console.log(data);
         setSuccessMessage("تم التحديث بنجاح");
@@ -214,11 +219,11 @@ function Profile({ navigation }) {
   };
   return (
     <View style={styles.container}>
-      <StatusBar backgroundColor={"#071355"} color={"white"} />
+      <StatusBar backgroundColor={"#76b49f"} color={"white"} />
       <ScrollView>
         {/* image */}
         <View style={styles.profileImgContainer}>
-          {user.gender === "Male" ? (
+          {user.gender === "male" ? (
             <Image
               source={manImage}
               style={styles.profileImg}
@@ -232,26 +237,12 @@ function Profile({ navigation }) {
             />
           )}
         </View>
-        {/* logout button */}
-        <View style={styles.logoutView}>
-          <Pressable
-            style={[
-              styles.logOut,
-              { backgroundColor: isPressed ? "#071355" : "#900" },
-            ]}
-            onPress={logOut}
-            onPressIn={() => setIsPressed(true)}
-            onPressOut={() => setIsPressed(false)}
-          >
-            <Text style={styles.logOutText}>تسجيل الخروج </Text>
-            <MaterialIcons name="logout" size={24} color="white" />
-          </Pressable>
-        </View>
+
         {/* {emial} */}
         <View style={styles.inputsView}>
           <View style={styles.labelView}>
             <View style={styles.title}>
-              <FontAwesome name="envelope" size={30} color="#900" />
+              <FontAwesome name="envelope" size={30} color="white" />
               <Text style={styles.label}> البريد الالكتروني</Text>
             </View>
             {editEmail ? (
@@ -281,7 +272,7 @@ function Profile({ navigation }) {
         <View style={styles.inputsView}>
           <View style={styles.labelView}>
             <View style={styles.title}>
-              <FontAwesome name="user" size={30} color="#900" />
+              <FontAwesome name="user" size={30} color="white" />
               <Text style={styles.label}> الاسم </Text>
             </View>
             {editUserName ? (
@@ -311,7 +302,7 @@ function Profile({ navigation }) {
         <View style={styles.inputsView}>
           <View style={styles.labelView}>
             <View style={styles.title}>
-              <Feather name="phone" size={30} color="#900" />
+              <Feather name="phone" size={30} color="white" />
               <Text style={styles.label}> الهاتف </Text>
             </View>
             {phone ? (
@@ -341,7 +332,7 @@ function Profile({ navigation }) {
         <View style={styles.inputsView}>
           <View style={styles.labelView}>
             <View style={styles.title}>
-              <AntDesign name="idcard" size={30} color="#900" />
+              <AntDesign name="idcard" size={30} color="white" />
               <Text style={styles.label}> العمر </Text>
             </View>
             {age ? (
@@ -371,7 +362,7 @@ function Profile({ navigation }) {
         <View style={styles.inputsView}>
           <View style={styles.labelView}>
             <View style={styles.title}>
-              <FontAwesome name="key" size={30} color="#900" />
+              <FontAwesome name="key" size={30} color="white" />
               <Text style={styles.label}> كلمه السر </Text>
             </View>
             {editPassword ? (
@@ -424,6 +415,21 @@ function Profile({ navigation }) {
             </View>
           )}
         </View>
+        {/* logout button */}
+        <View style={styles.logoutView}>
+          <Pressable
+            style={[
+              styles.logOut,
+              { backgroundColor: isPressed ? "#76b49f" : "#9abf4d" },
+            ]}
+            onPress={logOut}
+            onPressIn={() => setIsPressed(true)}
+            onPressOut={() => setIsPressed(false)}
+          >
+            <Text style={styles.logOutText}>تسجيل الخروج </Text>
+            <MaterialIcons name="logout" size={24} color="white" />
+          </Pressable>
+        </View>
       </ScrollView>
     </View>
   );
@@ -435,7 +441,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     // paddingVertical: StatusBar.currentHeight,
-    backgroundColor: "#071355",
+    backgroundColor: "#f5f5f5",
   },
   profileImgContainer: {
     justifyContent: "center",
@@ -467,15 +473,17 @@ const styles = StyleSheet.create({
   logoutView: {
     flexDirection: "row-reverse",
     justifyContent: "flex-start",
+    marginBottom: 15,
   },
   logOutText: {
     fontSize: 18,
-    fontWeight: "700",
+    // fontWeight: "700",
     paddingRight: 5,
     color: "white",
+    fontFamily: 'MarkaziText_700Bold',
   },
   inputsView: {
-    backgroundColor: "white",
+    backgroundColor: "#76b49f",
     marginVertical: 20,
     marginHorizontal: 10,
     paddingHorizontal: 10,
@@ -491,7 +499,7 @@ const styles = StyleSheet.create({
     elevation: 13,
   },
   input: {
-    borderBottomColor: "#071355",
+    borderBottomColor: "#9abf4d",
     borderBottomWidth: 2,
     borderRadius: 10,
     height: 50,
@@ -500,6 +508,7 @@ const styles = StyleSheet.create({
     color: "#071355",
     paddingHorizontal: 5,
     textAlign: "right",
+    fontFamily: 'MarkaziText_700Bold',
   },
   labelView: {
     flexDirection: "row-reverse", // Change the direction of the row to right-to-left
@@ -509,11 +518,13 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   label: {
-    color: "#071355",
+    color: "white",
     fontSize: 22,
     fontWeight: "600",
     textAlign: "right",
     marginRight: 10,
+    fontFamily: 'MarkaziText_700Bold',
+    // fontStyle:"italic"
   },
   icon: {
     alignItems: "flex-start",
@@ -526,6 +537,7 @@ const styles = StyleSheet.create({
     fontWeight: "400",
     paddingVertical: 20,
     paddingHorizontal: 20,
+    fontFamily: 'MarkaziText_400Regular',
     // borderBottomWidth: 2,
     // borderBottomColor: "#071355",
   },

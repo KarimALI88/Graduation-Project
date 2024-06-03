@@ -31,8 +31,10 @@ import ModalContext from "../context/ModalContext";
 import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
 import isEqual from "lodash/isEqual";
+import { useFonts, MarkaziText_400Regular, MarkaziText_700Bold } from '@expo-google-fonts/markazi-text';
+
 // import { Notifications } from 'expo';
-const reqHospImg = require("../assets/hospital-form.png");
+const reqHospImg = require("../assets/requestHospital.png");
 
 // Notifications.setNotificationHandler({
 //   handleNotification: async () => ({
@@ -42,15 +44,20 @@ const reqHospImg = require("../assets/hospital-form.png");
 //   }),
 // });
 
+
 export default function ReqHospital({ navigation }) {
+  let [fontsLoaded] = useFonts({
+    MarkaziText_400Regular,
+    MarkaziText_700Bold,
+  });
   const [expoPushToken, setExpoPushToken] = useState();
   const scaleValue = useRef(new Animated.Value(1)).current;
 
   const [isPressed, setIsPressed] = useState(false);
   const [location, setLocation] = useState({
     coords: {
-      latitude: 30.0308,
-      longitude: 31.2315,
+      latitude: 30,
+      longitude: 30,
     },
   });
   const [disease, setDisease] = useState("يصعب التشخيص");
@@ -249,55 +256,55 @@ export default function ReqHospital({ navigation }) {
   // ************ scheduled requests **************************
 
   // Define the interval for scheduled requests (adjust as needed)
-  // const pollingInterval = 1 * 60 * 1000; // 1 minutes in milliseconds
-  // const stopPollingAfter = 5 * 60 * 1000; // 3 minutes in milliseconds
-  // useEffect(() => {
-  //   const interval = setInterval(async () => {
-  //     // await sendNotification()
-  //     try {
-  //       const data = await fetch(url, {
-  //         method: "POST",
-  //         headers: headers,
-  //         body: JSON.stringify({
-  //           section: section,
-  //           case: disease,
-  //           latitude: location.latitude,
-  //           longitude: location.longitude,
-  //         }),
-  //       });
-  //       console.log("disease : ", disease);
-  //       console.log("section : ", section);
+  const pollingInterval = 1 * 60 * 1000; // 1 minutes in milliseconds
+  const stopPollingAfter = 5 * 60 * 1000; // 3 minutes in milliseconds
+  useEffect(() => {
+    const interval = setInterval(async () => {
+      // await sendNotification()
+      try {
+        const data = await fetch(url, {
+          method: "POST",
+          headers: headers,
+          body: JSON.stringify({
+            section: section,
+            case: disease,
+            latitude: location.latitude,
+            longitude: location.longitude,
+          }),
+        });
+        console.log("disease : ", disease);
+        console.log("section : ", section);
 
-  //       const response = await data.json();
-  //       console.log("data inside interval : ", response);
+        const response = await data.json();
+        console.log("data inside interval : ", response);
 
-  //       setHospitals((prevHospitals) => {
-  //         console.log("prev hosp", prevHospitals);
-  //         if (!isEqual(response, prevHospitals)) {
-  //           setNotification(true);
-  //           console.log("data changed");
-  //           return response;
-  //         } else {
-  //           setNotification(false);
-  //           console.log("data didn't change");
-  //           return prevHospitals;
-  //         }
-  //       });
-  //     } catch (error) {
-  //       console.error("Error fetching hospitals:", error);
-  //     }
-  //   }, pollingInterval);
+        setHospitals((prevHospitals) => {
+          console.log("prev hosp", prevHospitals);
+          if (!isEqual(response, prevHospitals)) {
+            setNotification(true);
+            console.log("data changed");
+            return response;
+          } else {
+            setNotification(false);
+            console.log("data didn't change");
+            return prevHospitals;
+          }
+        });
+      } catch (error) {
+        console.error("Error fetching hospitals:", error);
+      }
+    }, pollingInterval);
 
-  //   const timeout = setTimeout(() => {
-  //     clearInterval(interval);
-  //     console.log("Polling stopped after 3 minutes");
-  //   }, stopPollingAfter);
+    const timeout = setTimeout(() => {
+      clearInterval(interval);
+      console.log("Polling stopped after 3 minutes");
+    }, stopPollingAfter);
 
-  //   return () => {
-  //     clearInterval(interval);
-  //     clearTimeout(timeout);
-  //   };
-  // }, [section, disease, location]);
+    return () => {
+      clearInterval(interval);
+      clearTimeout(timeout);
+    };
+  }, [section, disease, location]);
 
   // **********************************************************
   // animation
@@ -334,7 +341,7 @@ export default function ReqHospital({ navigation }) {
   }, [notification]);
 
   // sendNotification()
-  const url = "http://192.168.1.7:8000/api/v1/select";
+  const url = "http://192.168.1.6:8000/api/v1/select";
 
   const headers = {
     "Content-Type": "application/json",
@@ -344,8 +351,8 @@ export default function ReqHospital({ navigation }) {
   const body = JSON.stringify({
     section: section,
     case: disease,
-    latitude: location.latitude,
-    longitude: location.longitude,
+    latitude: location.coords.latitude,
+    longitude: location.coords.longitude,
     // latitude:"30.158392910140286",
     // longitude:"31.62863789393309"
   });
@@ -364,6 +371,7 @@ export default function ReqHospital({ navigation }) {
 
       if (data) {
         console.log(" successful");
+        console.log("location",location);
         // console.log(data);
         setHospitals(data);
         setVisible(true);
@@ -384,6 +392,12 @@ export default function ReqHospital({ navigation }) {
     setRefreshing(true);
     setReqLocation(false);
     setLoading(false);
+    setLocation({
+      coords: {
+        latitude: 30,
+        longitude: 30,
+      },
+    });
     // Perform your refresh logic here, such as fetching new data from an API
 
     setTimeout(() => {
@@ -420,7 +434,7 @@ export default function ReqHospital({ navigation }) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar backgroundColor={"#071355"} color={"white"} />
+      <StatusBar backgroundColor={"#76b49f"} color={"white"} />
       <ScrollView
         showsVerticalScrollIndicator={false}
         refreshControl={
@@ -442,13 +456,13 @@ export default function ReqHospital({ navigation }) {
           {/* choose disease */}
           <View style={styles.inputContainer}>
             <View style={styles.labelView}>
-              <FontAwesome name="stethoscope" size={40} color="#900" />
+              <FontAwesome name="stethoscope" size={40} color="#76b49f" />
               <Text style={styles.label}>اختر المرض</Text>
             </View>
             <RNPickerSelect
               style={{
                 inputIOS: {
-                  backgroundColor: "white",
+                  backgroundColor: "#76b49f",
                   fontSize: 16,
                   paddingVertical: 12,
                   paddingHorizontal: 10,
@@ -460,7 +474,7 @@ export default function ReqHospital({ navigation }) {
                   marginTop: 10,
                 },
                 inputAndroid: {
-                  backgroundColor: "white",
+                  backgroundColor: "#76b49f",
                   fontSize: 16,
                   paddingHorizontal: 10,
                   paddingVertical: 8,
@@ -486,19 +500,19 @@ export default function ReqHospital({ navigation }) {
                 { label: "نسا وتوليد", value: "نسا وتوليد" },
                 { label: "يصعب التشخيص", value: "يصعب التشخيص" },
               ]}
-              // value={"يصعب التشخيص"}
+              value={disease}
             />
           </View>
           {/* choose private or governmental */}
           <View style={styles.inputContainer}>
             <View style={styles.labelView}>
-              <FontAwesome name="bank" size={40} color="#900" />
+              <FontAwesome name="bank" size={40} color="#76b49f" />
               <Text style={styles.label}>اختر القطاع</Text>
             </View>
             <RNPickerSelect
               style={{
                 inputIOS: {
-                  backgroundColor: "white",
+                  backgroundColor: "#76b49f",
                   fontSize: 16,
                   paddingVertical: 12,
                   paddingHorizontal: 10,
@@ -510,7 +524,7 @@ export default function ReqHospital({ navigation }) {
                   marginTop: 10,
                 },
                 inputAndroid: {
-                  backgroundColor: "white",
+                  backgroundColor: "#76b49f",
                   fontSize: 16,
                   paddingHorizontal: 10,
                   paddingVertical: 8,
@@ -534,7 +548,7 @@ export default function ReqHospital({ navigation }) {
           {/* location */}
           <View style={styles.inputContainer}>
             <View style={styles.labelView}>
-              <FontAwesome name="crosshairs" size={40} color="#900" />
+              <FontAwesome name="crosshairs" size={40} color="#76b49f"/> 
               <Text style={styles.label}> مكانك الان</Text>
             </View>
             {/* input location */}
@@ -543,8 +557,8 @@ export default function ReqHospital({ navigation }) {
               <MapView
                 style={{ flex: 1, height: 200 }}
                 region={{
-                  latitude: location ? location.coords.latitude : 30.05364,
-                  longitude: location ? location.coords.longitude : 31.50802,
+                  latitude: location ? location.coords.latitude : 30.0257723,
+                  longitude: location ? location.coords.longitude : 31.1805767,
                   latitudeDelta: 0.0922,
                   longitudeDelta: 0.0421,
                 }}
@@ -563,7 +577,7 @@ export default function ReqHospital({ navigation }) {
               <View style={styles.locationImg}>
                 <Pressable onPress={() => setReqLocation(true)}>
                   <Animated.View style={animatedStyle}>
-                    <Entypo name="location-pin" size={100} color="white" />
+                    <Entypo name="location-pin" size={100} color="#76b49f" />
                   </Animated.View>
                 </Pressable>
               </View>
@@ -574,7 +588,7 @@ export default function ReqHospital({ navigation }) {
           {loading ? (
             <ActivityIndicator
               animating={true}
-              color="white"
+              color="#76b49f"
               size={100}
               style={{ marginVertical: 20 }}
             />
@@ -583,11 +597,12 @@ export default function ReqHospital({ navigation }) {
               onPress={getHospitals}
               onPressIn={() => setIsPressed(true)}
               onPressOut={() => setIsPressed(false)}
+              disabled={location.coords.latitude == 30 ? true : false}
             >
               <Text
                 style={[
                   styles.button,
-                  { backgroundColor: isPressed ? "#071355" : "#900" },
+                  { backgroundColor: isPressed ? "#9abf4d" : "#76b49f" },
                 ]}
               >
                 طلب
@@ -609,7 +624,7 @@ const styles = StyleSheet.create({
     flex: 1,
     // paddingVertical: StatusBar.currentHeight,
     paddingHorizontal: 15,
-    backgroundColor: "#071355",
+    backgroundColor: "#f5f5f5",
   },
   imageContainer: {
     justifyContent: "center",
@@ -631,10 +646,11 @@ const styles = StyleSheet.create({
     alignItems: "center", // Align the items in the center
   },
   label: {
-    color: "white",
-    fontSize: 22,
+    color: "#76b49f",
+    fontSize: 24,
     fontWeight: "600",
     marginRight: 10,
+    fontFamily: 'MarkaziText_700Bold',
   },
   locationImg: {
     justifyContent: "center",
@@ -645,10 +661,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 30,
     paddingVertical: 10,
     borderRadius: 10,
-    fontWeight: "bold",
+    // fontWeight: "bold",
+    fontFamily: 'MarkaziText_700Bold',
     backgroundColor: "#900",
     color: "white",
-    fontSize: 20,
+    fontSize: 24,
     shadowColor: "black",
     shadowOffset: {
       width: 6,

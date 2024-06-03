@@ -17,8 +17,13 @@ import RNPickerSelect from "react-native-picker-select";
 import { FontAwesome } from "@expo/vector-icons";
 import * as Yup from "yup";
 const signupImage = require("../assets/signup-img.png");
+import { useFonts, MarkaziText_400Regular, MarkaziText_700Bold } from '@expo-google-fonts/markazi-text';
 
 export default function Signup({ navigation }) {
+  let [fontsLoaded] = useFonts({
+    MarkaziText_400Regular,
+    MarkaziText_700Bold,
+  });
   const [isPressed, setIsPressed] = useState(false);
   const [apiMessage, setApiMessage] = useState("");
   const [gender, setGender] = useState("male");
@@ -50,7 +55,7 @@ export default function Signup({ navigation }) {
     console.log("submit");
     try {
       const response = await fetch(
-        "http://192.168.1.7:8000/api/v1/auth/signup",
+        "http://192.168.1.6:8000/api/v1/auth/signup",
         {
           method: "POST",
           headers: {
@@ -69,15 +74,11 @@ export default function Signup({ navigation }) {
       );
       const data = await response.json();
       console.log(data);
-      if (
-        data.errors &&
-        data.errors.length > 0 &&
-        data.errors[0].type === "field"
-      ) {
-        setApiMessage(data.errors.msg);
-        Toast.error(apiMessage);
-        console.log("error in registration",data);
-      } else {
+      if(data.errors){
+        console.log("err in errors" , data.errors.map(err=>err.msg));
+        Toast.error(data.errors.map(err=>err.msg));
+      }
+       else {
         console.log("successsssss",data);
         Toast.success("تم انشاء حساب ");
         setTimeout(() => {
@@ -91,7 +92,7 @@ export default function Signup({ navigation }) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar backgroundColor={"#071355"} color={"white"} />
+      <StatusBar backgroundColor={"#76b49f"} color={"white"} />
       <Formik
         initialValues={{
           userName: "",
@@ -112,7 +113,7 @@ export default function Signup({ navigation }) {
           values,
           errors,
           touched,
-        }) => (
+        }) => ( 
           <View>
             <ScrollView showsVerticalScrollIndicator={false}>
               <View style={styles.imageContainer}>
@@ -123,7 +124,7 @@ export default function Signup({ navigation }) {
                 />
               </View>
               <View style={styles.createAcc}>
-                <FontAwesome name="stethoscope" size={60} color="#900" />
+                <FontAwesome name="stethoscope" size={60} color="#76b49f" />
                 <Text style={styles.createAccText}>إنشاء حساب</Text>
               </View>
               <View>
@@ -132,7 +133,7 @@ export default function Signup({ navigation }) {
               {/* user name */}
               <View style={styles.inputsView}>
                 <View style={styles.labelView}>
-                  <FontAwesome name="user" size={30} color="#900" />
+                  <FontAwesome name="user" size={30} color="#76b49f" />
                   <Text style={styles.label}> اسم المستخدم</Text>
                 </View>
                 <TextInput
@@ -154,7 +155,7 @@ export default function Signup({ navigation }) {
               {/* age*/}
               <View style={styles.inputsView}>
                 <View style={styles.labelView}>
-                  <FontAwesome name="calendar" size={30} color="#900" />
+                  <FontAwesome name="calendar" size={30} color="#76b49f" />
                   <Text style={styles.label}> العمر</Text>
                 </View>
                 <TextInput
@@ -177,7 +178,7 @@ export default function Signup({ navigation }) {
               {/* phone*/}
               <View style={styles.inputsView}>
                 <View style={styles.labelView}>
-                  <FontAwesome name="phone" size={30} color="#900" />
+                  <FontAwesome name="phone" size={30} color="#76b49f" />
                   <Text style={styles.label}> الهاتف</Text>
                 </View>
                 <TextInput
@@ -200,7 +201,7 @@ export default function Signup({ navigation }) {
               {/* email*/}
               <View style={styles.inputsView}>
                 <View style={styles.labelView}>
-                  <FontAwesome name="envelope" size={30} color="#900" />
+                  <FontAwesome name="envelope" size={30} color="#76b49f" />
                   <Text style={styles.label}> البريد الالكتروني</Text>
                 </View>
                 <TextInput
@@ -223,7 +224,7 @@ export default function Signup({ navigation }) {
               {/* password*/}
               <View style={styles.inputsView}>
                 <View style={styles.labelView}>
-                  <FontAwesome name="key" size={30} color="#900" />
+                  <FontAwesome name="key" size={30} color="#76b49f" />
                   <Text style={styles.label}> كلمه المرور</Text>
                 </View>
                 <TextInput
@@ -247,7 +248,7 @@ export default function Signup({ navigation }) {
               {/* confirmpassword*/}
               <View style={styles.inputsView}>
                 <View style={styles.labelView}>
-                  <FontAwesome name="key" size={30} color="#900" />
+                  <FontAwesome name="key" size={30} color="#76b49f" />
                   <Text style={styles.label}> تأكيد كلمه المرور</Text>
                 </View>
                 <TextInput
@@ -269,7 +270,7 @@ export default function Signup({ navigation }) {
               {/* gender*/}
               <View style={styles.inputsView}>
                 <View style={styles.labelView}>
-                  <FontAwesome name="venus-mars" size={30} color="#900" />
+                  <FontAwesome name="venus-mars" size={30} color="#9abf4d" />
                   <Text style={styles.label}> النوع </Text>
                 </View>
                 <RNPickerSelect
@@ -291,7 +292,7 @@ export default function Signup({ navigation }) {
                 <Text
                   style={[
                     styles.button,
-                    { backgroundColor: isPressed ? "#071355" : "#900" },
+                    { backgroundColor: isPressed ? "#9abf4d" : "#76b49f" },
                   ]}
                   type="submit"
                 >
@@ -331,8 +332,9 @@ const styles = StyleSheet.create({
   },
   createAccText: {
     fontSize: 30,
-    fontWeight: "bold",
-    color: "#071355",
+    // fontWeight: "bold",
+    color: "#76b49f",
+    fontFamily: 'MarkaziText_700Bold',
   },
   signupIcon: {
     width: 200,
@@ -342,7 +344,7 @@ const styles = StyleSheet.create({
     marginTop: 40,
   },
   input: {
-    borderBottomColor: "#071355",
+    borderBottomColor: "#9abf4d",
     borderBottomWidth: 2,
     borderRadius: 10,
     height: 50,
@@ -351,23 +353,26 @@ const styles = StyleSheet.create({
     color: "#071355",
     paddingHorizontal: 5,
     textAlign: "right",
+    fontFamily: 'MarkaziText_400Regular',
   },
   labelView: {
     flexDirection: "row-reverse", // Change the direction of the row to right-to-left
     alignItems: "center", // Align the items in the center
   },
   label: {
-    color: "#071355",
-    fontSize: 22,
+    color: "#76b49f",
+    fontSize: 24,
     fontWeight: "600",
     textAlign: "right",
     marginRight: 10,
+    fontFamily: 'MarkaziText_400Regular',
   },
   button: {
     paddingHorizontal: 30,
     paddingVertical: 10,
     borderRadius: 10,
-    fontWeight: "bold",
+    // fontWeight: "bold",
+    fontFamily: 'MarkaziText_700Bold',
     backgroundColor: "#900",
     color: "white",
     fontSize: 20,

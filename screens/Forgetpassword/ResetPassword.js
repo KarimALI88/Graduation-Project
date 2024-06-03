@@ -16,8 +16,15 @@ import { ScrollView } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
 import * as Yup from "yup";
 import AuthContext from "../../context/AuthContext";
+import { useFonts, MarkaziText_400Regular, MarkaziText_700Bold } from '@expo-google-fonts/markazi-text';
+
+const signin = require("../../assets/signin.png");
 
 export default function ResetPassword({ navigation }) {
+  let [fontsLoaded] = useFonts({
+    MarkaziText_400Regular,
+    MarkaziText_700Bold,
+  });
   const [isPressed, setIsPressed] = useState(false);
   const [apiMessage, setApiMessage] = useState("");
   const { temporaryToken } = useContext(AuthContext);
@@ -38,7 +45,7 @@ export default function ResetPassword({ navigation }) {
   async function newPasswordSubmit(values) {
     try {
       const response = await fetch(
-        "http://192.168.1.7:8000/api/v1/auth/resetPassword",
+        "http://192.168.1.6:8000/api/v1/auth/resetPassword",
         {
           method: "PUT",
           headers: {
@@ -69,7 +76,7 @@ export default function ResetPassword({ navigation }) {
   }
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar backgroundColor={"#071355"} color={"white"} />
+      <StatusBar backgroundColor={"#76b49f"} color={"white"} />
       <Formik
         initialValues={{
           newPassword: "",
@@ -90,16 +97,14 @@ export default function ResetPassword({ navigation }) {
             <ScrollView showsVerticalScrollIndicator={false}>
               <View style={styles.imageContainer}>
                 <Image
-                  source={{
-                    uri: "https://img.freepik.com/free-photo/fun-3d-cartoon-illustration-indian-doctor_183364-114487.jpg?w=360&t=st=1708419125~exp=1708419725~hmac=673a911799f6fc9e5d5bde285346169af5f270a5ef675ceec33f29555b6e401e",
-                  }}
+                  source={signin}
                   style={styles.signupImg}
                   resizeMode="contain"
                 />
               </View>
               <View style={styles.form}>
                 <View style={styles.createAcc}>
-                  <FontAwesome name="stethoscope" size={60} color="#900" />
+                  <FontAwesome name="stethoscope" size={60} color="#76b49f" />
                   <Text style={styles.createAccText}>تغيير كلمه السر</Text>
                 </View>
               </View>
@@ -108,7 +113,7 @@ export default function ResetPassword({ navigation }) {
               {/* password*/}
               <View style={styles.inputsView}>
                 <View style={styles.labelView}>
-                  <FontAwesome name="key" size={30} color="#900" />
+                  <FontAwesome name="key" size={30} color="#76b49f" />
                   <Text style={styles.label}> كلمه المرور</Text>
                 </View>
                 <TextInput
@@ -132,7 +137,7 @@ export default function ResetPassword({ navigation }) {
               {/* confirmpassword*/}
               <View style={styles.inputsView}>
                 <View style={styles.labelView}>
-                  <FontAwesome name="key" size={30} color="#900" />
+                  <FontAwesome name="key" size={30} color="#76b49f" />
                   <Text style={styles.label}> تأكيد كلمه المرور</Text>
                 </View>
                 <TextInput
@@ -159,7 +164,7 @@ export default function ResetPassword({ navigation }) {
                 <Text
                   style={[
                     styles.button,
-                    { backgroundColor: isPressed ? "#071355" : "#900" },
+                    { backgroundColor: isPressed ? "#9abf4d" : "#76b49f" },
                   ]}
                   type="submit"
                 >
@@ -197,8 +202,9 @@ const styles = StyleSheet.create({
   },
   createAccText: {
     fontSize: 30,
-    fontWeight: "bold",
-    color: "#071355",
+    // fontWeight: "bold",
+    color: "#76b49f",
+    fontFamily: 'MarkaziText_700Bold',
   },
   signupIcon: {
     width: 200,
@@ -208,7 +214,7 @@ const styles = StyleSheet.create({
     marginTop: 40,
   },
   input: {
-    borderBottomColor: "#071355",
+    borderBottomColor: "#9abf4d",
     borderBottomWidth: 2,
     borderRadius: 10,
     height: 50,
@@ -217,23 +223,26 @@ const styles = StyleSheet.create({
     color: "#071355",
     paddingHorizontal: 5,
     textAlign: "right",
+    fontFamily: 'MarkaziText_400Regular',
   },
   labelView: {
     flexDirection: "row-reverse", // Change the direction of the row to right-to-left
     alignItems: "center", // Align the items in the center
   },
   label: {
-    color: "#071355",
+    color: "#76b49f",
     fontSize: 22,
     fontWeight: "600",
     textAlign: "right",
     marginRight: 10,
+    fontFamily: 'MarkaziText_400Regular',
   },
   button: {
     paddingHorizontal: 30,
     paddingVertical: 10,
     borderRadius: 10,
-    fontWeight: "bold",
+    // fontWeight: "bold",
+    fontFamily: 'MarkaziText_700Bold',
     backgroundColor: "#900",
     color: "white",
     fontSize: 20,

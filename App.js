@@ -5,7 +5,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { FontAwesome5 } from "@expo/vector-icons";
 import ToastManager from "toastify-react-native";
-
+import "react-toastify/dist/ReactToastify.css";
 import Index from "./screens/Index";
 import Signup from "./screens/SignupScreen";
 import ReqHospital from "./screens/ReqHospital";
@@ -16,6 +16,14 @@ import ResetPassword from "./screens/Forgetpassword/ResetPassword";
 import EnterVCode from "./screens/Forgetpassword/EnterVCode";
 import AuthContext, { AuthProvider } from "./context/AuthContext";
 import { ModalProvider } from "./context/ModalContext";
+import {
+  useFonts,
+  MarkaziText_400Regular,
+  MarkaziText_700Bold,
+} from "@expo-google-fonts/markazi-text";
+import QuickTreat from "./screens/quickTreatment";
+import { LogBox } from 'react-native';
+LogBox.ignoreAllLogs(true); // Ignore all log notifications
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -26,9 +34,10 @@ function MainTabs() {
       initialRouteName="ReqHospital"
       screenOptions={{
         tabBarLabelPosition: "below-icon",
-        tabBarActiveTintColor: "#fff",
+        tabBarActiveTintColor: "#9abf4d",
+
         tabBarStyle: {
-          backgroundColor: "#071355",
+          backgroundColor: "white",
           height: 70,
           paddingBottom: 7,
           shadowColor: "black",
@@ -37,7 +46,11 @@ function MainTabs() {
           shadowRadius: 4,
           elevation: 5,
         },
-        tabBarLabelStyle: { fontSize: 14, fontWeight: "600" },
+        tabBarLabelStyle: {
+          fontSize: 14,
+          fontWeight: "600",
+          fontFamily: "MarkaziText_700Bold",
+        },
         headerShown: false,
       }}
     >
@@ -47,17 +60,27 @@ function MainTabs() {
         options={{
           tabBarLabel: "الصفحه الشخصيه",
           tabBarIcon: ({ color }) => (
-            <Ionicons name={"person"} size={27} color={color} style={{ fontWeight: "600" }} />
+            <Ionicons
+              name={"person"}
+              size={27}
+              color={color}
+              style={{ fontWeight: "600" }}
+            />
           ),
         }}
       />
       <Tab.Screen
-        name="Index"
-        component={Index}
+        name="QuickTreat"
+        component={QuickTreat}
         options={{
-          tabBarLabel: "الرئيسية",
+          tabBarLabel: "اسعافات اولية",
           tabBarIcon: ({ color }) => (
-            <Ionicons name={"home"} size={27} color={color} style={{ fontWeight: "600" }} />
+            <Ionicons
+              name={"medkit"}
+              size={27}
+              color={color}
+              style={{ fontWeight: "600" }}
+            />
           ),
         }}
       />
@@ -80,10 +103,14 @@ function AuthStack() {
     <Stack.Navigator
       screenOptions={{
         contentStyle: { backgroundColor: "white" },
-        headerStyle: { backgroundColor: "#071355" },
-        headerTitleStyle: { fontWeight: "bold", textAlign: "right" },
+        headerStyle: { backgroundColor: "#76b49f" },
+        headerTitleStyle: {
+          textAlign: "right",
+          fontFamily: "MarkaziText_700Bold",
+        },
         headerTintColor: "#fff",
         headerTitleAlign: "center",
+        fontFamily: "MarkaziText_700Bold",
       }}
     >
       <Stack.Screen
@@ -137,12 +164,18 @@ function MainNavigator() {
           <Stack.Screen name="AuthStack" component={AuthStack} />
         )}
       </Stack.Navigator>
-      <ToastManager />
+      <ToastManager
+        style={{ width: "100%", paddingVertical: 10, height: "auto" }}
+      />
     </NavigationContainer>
   );
 }
 
 export default function App() {
+  let [fontsLoaded] = useFonts({
+    MarkaziText_400Regular,
+    MarkaziText_700Bold,
+  });
   return (
     <AuthProvider>
       <ModalProvider>

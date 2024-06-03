@@ -1,4 +1,4 @@
-import React, { useContext, useState, useRef, useEffect } from "react";
+import React, { useContext, useState, useRef, useEffect,useCallback } from "react";
 import {
   Text,
   StyleSheet,
@@ -11,6 +11,9 @@ import {
   Platform,
 } from "react-native";
 import AuthContext from "../context/AuthContext";
+
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
+
 // import * as Device from "expo-device";
 // import * as Notifications from "expo-notifications";
 
@@ -23,11 +26,12 @@ import AuthContext from "../context/AuthContext";
 // });
 
 function Index({ navigation }) {
+
   const scaleValue = useRef(new Animated.Value(1)).current;
-  const logo = require("../assets/hompital-Logo.png");
+  const logo = require("../assets/logo.jpg");
   const { token } = useContext(AuthContext);
   const [isPressed, setIsPressed] = useState(false);
-
+  const [isPressedFast, setIsPressedFast] = useState(false);
   // ********************************
   // const sendNotification = async () => {
   //   console.log("send notification");
@@ -122,24 +126,30 @@ function Index({ navigation }) {
     transform: [{ scale: scaleValue }],
   };
 
-  useEffect(() => {
-    startAnimation();
-  }, []);
+  // useEffect(() => {
+  //   startAnimation();
+  // }, []);
+  useFocusEffect(
+    useCallback(() => {
+      const timer = setTimeout(() => {
+        token ? navigation.navigate("ReqHospital") : navigation.navigate("SigninScreen");
+      }, 4000);
+
+      return () => clearTimeout(timer); // Clean up the timer on unmount
+    }, [token, navigation])
+  );
 
   // ********************************
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar backgroundColor={"#071355"} color={"white"} />
-      <Text style={styles.title}>Hompital</Text>
-      <Animated.View style={animatedStyle}>
-        <Image style={styles.image} source={logo} resizeMode="contain" />
-      </Animated.View>
+      <StatusBar backgroundColor={"#76b49f"} color={"white"} />
+      {/* <Text style={styles.title}>Hompital</Text> */}
+      {/* <Animated.View style={animatedStyle}> */}
+      <Image style={styles.image} source={logo} resizeMode="contain" />
+      {/* </Animated.View> */}
 
-      {/* <Text style={styles.text}>
-        دلوقتي تقدر تعرف فين اقرب مستشفي بتعالج حالتك من بيتك وكمان بنساعد المسعفين
-        فانهم يوفروا وقت ويروحوا القرب مستشفي متاحه ومتاح فيها مكان
-      </Text> */}
-      {token ? (
+      
+      {/* {token ? (
         <Pressable
           onPress={() => {
             navigation.navigate("ReqHospital");
@@ -150,7 +160,7 @@ function Index({ navigation }) {
           <Text
             style={[
               styles.button,
-              { backgroundColor: isPressed ? "#071355" : "#900" },
+              { backgroundColor: isPressed ? "#9abf4d" : "#76b49f" },
             ]}
           >
             طلب مستشفي
@@ -168,7 +178,7 @@ function Index({ navigation }) {
             <Text
               style={[
                 styles.button,
-                { backgroundColor: isPressed ? "#071355" : "#900" },
+                { backgroundColor: isPressed ? "#9abf4d" : "#76b49f",},
               ]}
             >
               تسجيل الدخول
@@ -176,15 +186,20 @@ function Index({ navigation }) {
           </Pressable>
 
           <Text
-            style={styles.fastEnter}
+            style={[
+              styles.fastEnter,
+              { color: isPressedFast ? "#9abf4d" : "black" },
+            ]}
             onPress={() => {
               navigation.navigate("ReqHospital");
             }}
+            onPressIn={() => setIsPressedFast(true)}
+            onPressOut={() => setIsPressedFast(false)}
           >
-            دخول سريع
+           دخول كزائر 
           </Text>
         </>
-      )}
+      )} */}
       {/* <Button title="send notification" onPress={sendNotification} /> */}
     </SafeAreaView>
   );
@@ -202,7 +217,7 @@ const styles = StyleSheet.create({
     // paddingBottom: 20,
   },
   title: {
-    color: "#071355",
+    color: "#3573f9",
     fontSize: 30,
     fontWeight: "bold",
     // marginTop: 25,
@@ -223,7 +238,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 30,
     paddingVertical: 10,
     borderRadius: 10,
-    fontWeight: "bold",
+    // fontWeight: "bold",
     // backgroundColor: "#900",
     color: "white",
     fontSize: 20,
@@ -238,9 +253,11 @@ const styles = StyleSheet.create({
     elevation: 10,
     textAlign: "center",
     marginVertical: 30,
+    
   },
-  fastEnter : {
-    fontSize: 25,
-    fontWeight: "400"
-  }
+  fastEnter: {
+    fontSize: 18,
+    fontWeight: "400",
+    
+  },
 });
