@@ -23,6 +23,10 @@ import {
 } from "@expo-google-fonts/markazi-text";
 import QuickTreat from "./screens/quickTreatment";
 import { LogBox } from 'react-native';
+import * as Font from 'expo-font';
+import { AppLoading } from 'expo';
+import RespHosp from "./components/RespHosp";
+
 LogBox.ignoreAllLogs(true); // Ignore all log notifications
 
 const Tab = createBottomTabNavigator();
@@ -117,6 +121,12 @@ function AuthStack() {
         name="Index"
         component={Index}
         options={{ headerShown: false }}
+      />
+     
+      <Stack.Screen
+        name="QuickTreat"
+        component={QuickTreat}
+        options={{ headerShown: true }}
       />
       <Stack.Screen
         name="SigninScreen"
