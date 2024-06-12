@@ -17,7 +17,11 @@ import RNPickerSelect from "react-native-picker-select";
 import { FontAwesome } from "@expo/vector-icons";
 import * as Yup from "yup";
 const signupImage = require("../assets/signup-img.png");
-import { useFonts, MarkaziText_400Regular, MarkaziText_700Bold } from '@expo-google-fonts/markazi-text';
+import {
+  useFonts,
+  MarkaziText_400Regular,
+  MarkaziText_700Bold,
+} from "@expo-google-fonts/markazi-text";
 
 export default function Signup({ navigation }) {
   let [fontsLoaded] = useFonts({
@@ -31,7 +35,7 @@ export default function Signup({ navigation }) {
   const formValidation = Yup.object().shape({
     userName: Yup.string()
       .min(3, "اسم المستخدم ثلاثة حروف او اكتر")
-      .max(10, "اسم المستخدم اقل من 10 حروف")
+      .max(15, "اسم المستخدم اقل من 10 حروف")
       .required("يرجى ادخال اسم المستخدم"),
     email: Yup.string()
       .email("الخاص بك بطريقة صحيحة'gmail'يرجى ادخال ")
@@ -41,7 +45,7 @@ export default function Signup({ navigation }) {
       .matches(
         /^(?=.*[!@#$%^&*(),.?":{}|<>])(?=.*[A-Z]).{6,}$/,
         "يجب ان تحتوي كلمة المرور علي ستة أحرف علي الاقل وحرف كبير وحرف خاص ($,@,&,!)"
-      ), 
+      ),
     passwordConfirm: Yup.string()
       .required("يرجي تاكيد كلمه المرور")
       .oneOf([Yup.ref("password")], "تأكيد كلمة المرور غير صحيح"),
@@ -55,7 +59,7 @@ export default function Signup({ navigation }) {
     console.log("submit");
     try {
       const response = await fetch(
-        "http://192.168.1.6:8000/api/v1/auth/signup",
+        "http://192.168.1.3:8000/api/v1/auth/signup",
         {
           method: "POST",
           headers: {
@@ -74,12 +78,14 @@ export default function Signup({ navigation }) {
       );
       const data = await response.json();
       console.log(data);
-      if(data.errors){
-        console.log("err in errors" , data.errors.map(err=>err.msg));
-        Toast.error(data.errors.map(err=>err.msg));
-      }
-       else {
-        console.log("successsssss",data);
+      if (data.errors) {
+        console.log(
+          "err in errors",
+          data.errors.map((err) => err.msg)
+        );
+        Toast.error(data.errors.map((err) => err.msg));
+      } else {
+        console.log("successsssss", data);
         Toast.success("تم انشاء حساب ");
         setTimeout(() => {
           navigation.navigate("SigninScreen");
@@ -113,7 +119,7 @@ export default function Signup({ navigation }) {
           values,
           errors,
           touched,
-        }) => ( 
+        }) => (
           <View>
             <ScrollView showsVerticalScrollIndicator={false}>
               <View style={styles.imageContainer}>
@@ -127,9 +133,7 @@ export default function Signup({ navigation }) {
                 <FontAwesome name="stethoscope" size={60} color="#76b49f" />
                 <Text style={styles.createAccText}>إنشاء حساب</Text>
               </View>
-              <View>
-                {/* {apiError?<Text style={{ fontSize: 10, color: 'red' }}>{apiError}</Text>:""} */}
-              </View>
+              <View></View>
               {/* user name */}
               <View style={styles.inputsView}>
                 <View style={styles.labelView}>
@@ -310,7 +314,6 @@ export default function Signup({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // paddingVertical: StatusBar.currentHeight,
     paddingHorizontal: 15,
     backgroundColor: "white",
   },
@@ -319,8 +322,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   signupImg: {
-    // flex: 0.5, // Set the width of the image to 20% of its parent's width
-    // aspectRatio: 1, // Maintain the aspect ratio of the image
     width: 300,
     height: 300,
   },
@@ -332,9 +333,8 @@ const styles = StyleSheet.create({
   },
   createAccText: {
     fontSize: 30,
-    // fontWeight: "bold",
     color: "#76b49f",
-    fontFamily: 'MarkaziText_700Bold',
+    fontFamily: "MarkaziText_700Bold",
   },
   signupIcon: {
     width: 200,
@@ -353,7 +353,7 @@ const styles = StyleSheet.create({
     color: "#071355",
     paddingHorizontal: 5,
     textAlign: "right",
-    fontFamily: 'MarkaziText_400Regular',
+    fontFamily: "MarkaziText_400Regular",
   },
   labelView: {
     flexDirection: "row-reverse", // Change the direction of the row to right-to-left
@@ -365,14 +365,13 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     textAlign: "right",
     marginRight: 10,
-    fontFamily: 'MarkaziText_400Regular',
+    fontFamily: "MarkaziText_400Regular",
   },
   button: {
     paddingHorizontal: 30,
     paddingVertical: 10,
     borderRadius: 10,
-    // fontWeight: "bold",
-    fontFamily: 'MarkaziText_700Bold',
+    fontFamily: "MarkaziText_700Bold",
     backgroundColor: "#900",
     color: "white",
     fontSize: 20,
