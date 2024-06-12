@@ -26,24 +26,19 @@ import MapView, { Marker } from "react-native-maps";
 import * as Location from "expo-location";
 import RespHosp from "../components/RespHosp";
 import { Entypo } from "@expo/vector-icons";
+import Ionicons from "@expo/vector-icons/Ionicons";
 import AuthContext from "../context/AuthContext";
 import ModalContext from "../context/ModalContext";
 import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
 import isEqual from "lodash/isEqual";
-import { useFonts, MarkaziText_400Regular, MarkaziText_700Bold } from '@expo-google-fonts/markazi-text';
+import {
+  useFonts,
+  MarkaziText_400Regular,
+  MarkaziText_700Bold,
+} from "@expo-google-fonts/markazi-text";
 
-// import { Notifications } from 'expo';
 const reqHospImg = require("../assets/requestHospital.png");
-
-// Notifications.setNotificationHandler({
-//   handleNotification: async () => ({
-//     shouldShowAlert: true,
-//     shouldPlaySound: true,
-//     shouldSetBadge: false,
-//   }),
-// });
-
 
 export default function ReqHospital({ navigation }) {
   let [fontsLoaded] = useFonts({
@@ -61,90 +56,19 @@ export default function ReqHospital({ navigation }) {
     },
   });
   const [disease, setDisease] = useState("يصعب التشخيص");
-  // const { disease } = useContext(AuthContext);
-  // const { setDisease } = useContext(AuthContext);
+
   const [section, setSection] = useState("خاص أو حكومي");
-  // const { section } = useContext(AuthContext);
-  // const { setSection } = useContext(AuthContext);
+
   const [reqLocation, setReqLocation] = useState(false);
   const [notification, setNotification] = useState(false);
   const { visible, setVisible } = useContext(ModalContext);
   const [loading, setLoading] = useState(false);
   const [hospitals, setHospitals] = useState([]);
-  // const { hospitals } = useContext(AuthContext);
-  // const { setHospitals } = useContext(AuthContext);
+
   const [refreshing, setRefreshing] = useState(false);
   const { token } = useContext(AuthContext);
   // ********************************
   // ********* notification code ***********************
-  // const sendNotification = async () => {
-  //   console.log("send notification");
-  //   const message = {
-  //     to: expoPushToken,
-  //     sound: "default",
-  //     title: "شغلت النوتيفيكيشن يا صيع يا صيع",
-  //     body: "بس فرونت بس بصراحه",
-  //   };
-  //   await fetch("https://exp.host/--/api/v2/push/send", {
-  //     method: "POST",
-  //     headers: {
-  //       host: "exp.host",
-  //       accept: "application/json",
-  //       "accept-encoding": "gzip, deflate",
-  //       "content-type": "application/json",
-  //     },
-  //     body: JSON.stringify(message),
-  //   });
-  // };
-
-  // useEffect(() => {
-  //   console.log("registration");
-  //   registerForPushNotificationsAsync()
-  //     .then((token) => {
-  //       console.log("token is ", token);
-  //       setExpoPushToken(token);
-  //     })
-  //     .catch((err) => console.log(err));
-  // }, []);
-
-  // async function registerForPushNotificationsAsync() {
-  //   let token;
-
-  //   if (Platform.OS === "android") {
-  //     await Notifications.setNotificationChannelAsync("default", {
-  //       name: "default",
-  //       importance: Notifications.AndroidImportance.MAX,
-  //       vibrationPattern: [0, 250, 250, 250],
-  //       lightColor: "#FF231F7C",
-  //     });
-  //   }
-
-  //   if (Device.isDevice) {
-  //     const { status: existingStatus } =
-  //       await Notifications.getPermissionsAsync();
-  //     let finalStatus = existingStatus;
-  //     if (existingStatus !== "granted") {
-  //       const { status } = await Notifications.requestPermissionsAsync();
-  //       finalStatus = status;
-  //     }
-  //     if (finalStatus !== "granted") {
-  //       alert("Failed to get push token for push notification!");
-  //       return;
-  //     }
-  //     // Learn more about projectId:
-  //     // https://docs.expo.dev/push-notifications/push-notifications-setup/#configure-projectid
-  //     token = (
-  //       await Notifications.getExpoPushTokenAsync({
-  //         projectId: "f67db72d-7652-45fc-80c0-70a27f8c5fae",
-  //       })
-  //     ).data;
-  //     console.log(token);
-  //   } else {
-  //     alert("Must use physical device for Push Notifications");
-  //   }
-
-  //   return token;
-  // }
 
   useEffect(() => {
     registerForPushNotificationsAsync()
@@ -190,14 +114,6 @@ export default function ReqHospital({ navigation }) {
     return token;
   }
 
-  // Notifications.setNotificationHandler({
-  //   handleNotification: async () => ({
-  //     shouldShowAlert: true,
-  //     shouldPlaySound: true,
-  //     shouldSetBadge: false,
-  //   }),
-  // });
-
   Notifications.setNotificationHandler({
     handleNotification: async (notification) => {
       const { data, ...rest } = notification;
@@ -215,23 +131,11 @@ export default function ReqHospital({ navigation }) {
 
   const sendNotification = async () => {
     console.log("Sending notification...");
-
-    // const message = {
-    //   to: expoPushToken,
-    //   sound: "default",
-    //   title: "شغلت النوتيفيكيشن يا صيع يا صيع",
-    //   body: "بس فرونت بس بصراحه",
-    // };
-
     const message = {
       to: expoPushToken,
       sound: "default",
       title: "Homepital Application",
       body: "تم تحديث المستشفيات المتاحة",
-      // Add the following line to include your custom icon
-      // You can replace 'logo.png' with the path to your custom icon file
-      // Make sure to place your custom icon in the assets folder of your project
-      // and update the path accordingly
       data: { image: require("../assets/hompital-Logo.png") },
     };
 
@@ -257,8 +161,14 @@ export default function ReqHospital({ navigation }) {
 
   // Define the interval for scheduled requests (adjust as needed)
   const pollingInterval = 1 * 60 * 1000; // 1 minutes in milliseconds
-  const stopPollingAfter = 5 * 60 * 1000; // 3 minutes in milliseconds
+  const stopPollingAfter = 15 * 60 * 1000; // 15 minutes in milliseconds
+
   useEffect(() => {
+    // Return early if latitude is 30 and make the button displayed
+    if (location.coords.latitude === 30) {
+      return;
+    }
+
     const interval = setInterval(async () => {
       // await sendNotification()
       try {
@@ -268,8 +178,8 @@ export default function ReqHospital({ navigation }) {
           body: JSON.stringify({
             section: section,
             case: disease,
-            latitude: location.latitude,
-            longitude: location.longitude,
+            latitude: location.coords.latitude,
+            longitude: location.coords.longitude,
           }),
         });
         console.log("disease : ", disease);
@@ -341,7 +251,7 @@ export default function ReqHospital({ navigation }) {
   }, [notification]);
 
   // sendNotification()
-  const url = "http://192.168.1.6:8000/api/v1/select";
+  const url = "http://192.168.1.3:8000/api/v1/select";
 
   const headers = {
     "Content-Type": "application/json",
@@ -353,8 +263,6 @@ export default function ReqHospital({ navigation }) {
     case: disease,
     latitude: location.coords.latitude,
     longitude: location.coords.longitude,
-    // latitude:"30.158392910140286",
-    // longitude:"31.62863789393309"
   });
 
   const options = {
@@ -371,17 +279,13 @@ export default function ReqHospital({ navigation }) {
 
       if (data) {
         console.log(" successful");
-        console.log("location",location);
+        console.log("location", location);
         // console.log(data);
         setHospitals(data);
         setVisible(true);
-        // navigation.navigate("RespHosp")
-        // setUser(data.data);
       } else {
         console.log("No token received");
         console.log(data);
-        // setErrorMessage(data.message);
-        // setSuccessMessage(null);
       }
     } catch (error) {
       console.error("Error during login:", error);
@@ -398,7 +302,6 @@ export default function ReqHospital({ navigation }) {
         longitude: 30,
       },
     });
-    // Perform your refresh logic here, such as fetching new data from an API
 
     setTimeout(() => {
       setRefreshing(false);
@@ -451,6 +354,17 @@ export default function ReqHospital({ navigation }) {
       >
         <View style={styles.imageContainer}>
           <Image source={reqHospImg} style={styles.hospImg} />
+          {!token ? (
+            <Pressable
+              onPress={() => navigation.navigate("QuickTreat")}
+              style={styles.aidPress}
+            >
+              <View style={styles.aidview}>
+                <Text style={styles.aidtext}>الاسعافات الاولية</Text>
+                <Ionicons name={"medkit"} size={27} color={"white"} />
+              </View>
+            </Pressable>
+          ) : null}
         </View>
         <View style={styles.formContainer}>
           {/* choose disease */}
@@ -548,7 +462,7 @@ export default function ReqHospital({ navigation }) {
           {/* location */}
           <View style={styles.inputContainer}>
             <View style={styles.labelView}>
-              <FontAwesome name="crosshairs" size={40} color="#76b49f"/> 
+              <FontAwesome name="crosshairs" size={40} color="#76b49f" />
               <Text style={styles.label}> مكانك الان</Text>
             </View>
             {/* input location */}
@@ -612,6 +526,7 @@ export default function ReqHospital({ navigation }) {
         </View>
 
         <RespHosp hospitals={hospitals} visible={visible} />
+        {/* first aid for guest */}
       </ScrollView>
     </SafeAreaView>
   );
@@ -622,7 +537,6 @@ export default function ReqHospital({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // paddingVertical: StatusBar.currentHeight,
     paddingHorizontal: 15,
     backgroundColor: "#f5f5f5",
   },
@@ -650,7 +564,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: "600",
     marginRight: 10,
-    fontFamily: 'MarkaziText_700Bold',
+    fontFamily: "MarkaziText_700Bold",
   },
   locationImg: {
     justifyContent: "center",
@@ -661,8 +575,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 30,
     paddingVertical: 10,
     borderRadius: 10,
-    // fontWeight: "bold",
-    fontFamily: 'MarkaziText_700Bold',
+    fontFamily: "MarkaziText_700Bold",
     backgroundColor: "#900",
     color: "white",
     fontSize: 24,
@@ -676,5 +589,28 @@ const styles = StyleSheet.create({
     elevation: 10,
     textAlign: "center",
     marginVertical: 30,
+  },
+  aidview: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    width: "auto",
+    backgroundColor: "#76b49f",
+    width: "60%",
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 10,
+  },
+  aidPress: {
+    flexDirection: "row-reverse",
+    justifyContent: "center",
+    alignItems: "center",
+    marginHorizontal: 20,
+    marginVertical: 20,
+  },
+  aidtext: {
+    color: "white",
+    fontFamily: "MarkaziText_700Bold",
+    fontSize: 20,
   },
 });
