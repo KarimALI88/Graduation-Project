@@ -16,7 +16,11 @@ import { useContext, useState } from "react";
 import { useEffect } from "react";
 import { Toast } from "toastify-react-native";
 import AuthContext from "../context/AuthContext";
-import { useFonts, MarkaziText_400Regular, MarkaziText_700Bold } from '@expo-google-fonts/markazi-text';
+import {
+  useFonts,
+  MarkaziText_400Regular,
+  MarkaziText_700Bold,
+} from "@expo-google-fonts/markazi-text";
 
 const manImage = require("../assets/man-img.png");
 const womenImage = require("../assets/women-img.png");
@@ -44,11 +48,9 @@ function Profile({ navigation }) {
   });
   // console.log(token);
 
-  const url = "http://192.168.1.6:8000/api/v1/users/getMe";
-  const url2 = "http://192.168.1.6:8000/api/v1/users/updateMe";
-  const url3 = "http://192.168.1.6:8000/api/v1/users/chamgeMyPassword";
-  // const JWT =
-  //   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NWNiYmI3MzBmMzBlOWY5MDhkM2MxNWQiLCJpYXQiOjE3MDk1ODE1NDcsImV4cCI6MTcxODIyMTU0N30.zszPP723QEKMmT5Rer0yGkKYQiSyHjONW_uE2heCgjs";
+  const url = "http://192.168.1.3:8000/api/v1/users/getMe";
+  const url2 = "http://192.168.1.3:8000/api/v1/users/updateMe";
+  const url3 = "http://192.168.1.3:8000/api/v1/users/chamgeMyPassword";
   const headers = {
     "Content-Type": "application/json",
     Authorization: "Bearer " + token,
@@ -63,22 +65,9 @@ function Profile({ navigation }) {
   const options1 = {
     method: "GET",
     headers: headers,
-    // body: body,
-  };
-  const options2 = {
-    method: "PUT",
-    headers: headers,
-    body: body,
-  };
-  const options3 = {
-    method: "PUT",
-    headers: headers,
-    body: passBody,
   };
 
   const getUser = async (e) => {
-    // e.preventDefault(); // Prevent default form submission behavior
-
     try {
       const response = await fetch(url, options1);
       const data = await response.json();
@@ -145,11 +134,11 @@ function Profile({ navigation }) {
       if (data.errors) {
         console.log("Update failed");
         console.log(data);
-        Toast.error(data.errors.map((err) => err.msg).join('\n'));
+        Toast.error(data.errors.map((err) => err.msg).join("\n"));
       } else if (data.error) {
         Toast.error(data.error, {
           style: {
-            maxWidth: '90%'
+            maxWidth: "90%",
           },
         });
       } else {
@@ -215,7 +204,6 @@ function Profile({ navigation }) {
   const logOut = () => {
     console.log("logout");
     setToken(null);
-    // navigation.navigate("Index");
   };
   return (
     <View style={styles.container}>
@@ -440,7 +428,6 @@ export default Profile;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // paddingVertical: StatusBar.currentHeight,
     backgroundColor: "#f5f5f5",
   },
   profileImgContainer: {
@@ -448,7 +435,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   profileImg: {
-    // height: '60%',
     width: 400,
     height: 300,
   },
@@ -477,10 +463,9 @@ const styles = StyleSheet.create({
   },
   logOutText: {
     fontSize: 18,
-    // fontWeight: "700",
     paddingRight: 5,
     color: "white",
-    fontFamily: 'MarkaziText_700Bold',
+    fontFamily: "MarkaziText_700Bold",
   },
   inputsView: {
     backgroundColor: "#76b49f",
@@ -508,7 +493,7 @@ const styles = StyleSheet.create({
     color: "#071355",
     paddingHorizontal: 5,
     textAlign: "right",
-    fontFamily: 'MarkaziText_700Bold',
+    fontFamily: "MarkaziText_700Bold",
   },
   labelView: {
     flexDirection: "row-reverse", // Change the direction of the row to right-to-left
@@ -523,8 +508,7 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     textAlign: "right",
     marginRight: 10,
-    fontFamily: 'MarkaziText_700Bold',
-    // fontStyle:"italic"
+    fontFamily: "MarkaziText_700Bold",
   },
   icon: {
     alignItems: "flex-start",
@@ -537,8 +521,6 @@ const styles = StyleSheet.create({
     fontWeight: "400",
     paddingVertical: 20,
     paddingHorizontal: 20,
-    fontFamily: 'MarkaziText_400Regular',
-    // borderBottomWidth: 2,
-    // borderBottomColor: "#071355",
+    fontFamily: "MarkaziText_400Regular",
   },
 });
