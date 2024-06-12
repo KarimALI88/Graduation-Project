@@ -9,6 +9,7 @@ import {
   StyleSheet,
   StatusBar,
   Pressable,
+  Alert,
 } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -52,7 +53,7 @@ function SigninScreen({ navigation }) {
     return Object.keys(errors).length === 0;
   };
 
-  const url = "http://192.168.1.6:8000/api/v1/auth/login";
+  const url = "http://192.168.1.3:8000/api/v1/auth/login";
   const headers = {
     "Content-Type": "application/json",
     Authorization: "Bearer " + AsyncStorage.getItem("JWT"),
@@ -68,22 +69,15 @@ function SigninScreen({ navigation }) {
   };
 
   const handleSubmit = async () => {
-    // Prevent default form submission behavior
-
     if (validateForm()) {
       try {
         const response = await fetch(url, options);
         const data = await response.json();
 
         if (data.token) {
-          // Set the success message first
           setSuccessMessage("تم تسجيل الدخول");
-
-          // Update AsyncStorage with the token
           await AsyncStorage.setItem("JWT", data.token);
           setToken(data.token);
-
-          // Display the success toast message after the state has been updated
 
           Toast.success(successMessage);
 
@@ -92,7 +86,6 @@ function SigninScreen({ navigation }) {
             navigation.navigate("Index");
           }, 3000);
         } else {
-          // Set the error message
           setErrorMessage(data.message);
           Toast.error(errorMessage);
           setSuccessMessage(null);
@@ -103,10 +96,19 @@ function SigninScreen({ navigation }) {
     }
   };
 
+  const enterAsGuest = () => {
+    Alert.alert("تنبيه", "ستفقد بعض المميزات في المستقبل", [
+      {
+        text: "الغاء",
+        onPress: () => console.log("Cancel Pressed"),
+        style: "cancel",
+      },
+      { text: "تاكيد", onPress: () => navigation.navigate("ReqHospital") },
+    ]);
+  };
+
   return (
     <SafeAreaView style={styles.contanier}>
-      {/* <Image source={bg} style={styles.Image} resizeMode="cover" /> */}
-      {/* <StatusBar backgroundColor="#3447b2" /> */}
       <StatusBar backgroundColor={"#76b49f"} color={"white"} />
       <ScrollView>
         <View style={styles.imageContainer}>
@@ -122,12 +124,7 @@ function SigninScreen({ navigation }) {
             <FontAwesome name="stethoscope" size={60} color="#76b49f" />
             <Text style={styles.createAccText}>تسجيل الدخول</Text>
           </View>
-          {/* {errorMessage != null ? (
-            <Text style={styles.errorMsg}>{errorMessage}</Text>
-          ) : null}
-          {successMessage != null ? (
-            <Text style={styles.successMsg}>{successMessage}</Text>
-          ) : null} */}
+
           <View style={styles.inputsView}>
             <View style={styles.labelView}>
               <FontAwesome name="envelope" size={30} color="#76b49f" />
@@ -163,9 +160,7 @@ function SigninScreen({ navigation }) {
           </View>
           <View style={styles.quesContainer}>
             <Pressable
-              onPress={() => {
-                navigation.navigate("ReqHospital");
-              }}
+              onPress={enterAsGuest}
               onPressIn={() => setIsPressedGuest(true)}
               onPressOut={() => setIsPressedGuest(false)}
             >
@@ -175,7 +170,7 @@ function SigninScreen({ navigation }) {
                   { color: isPressedGuest ? "#9abf4d" : "blue" },
                 ]}
               >
-                  دخول كزائر
+                دخول كزائر
               </Text>
             </Pressable>
             <Pressable
@@ -236,7 +231,6 @@ export default SigninScreen;
 const styles = StyleSheet.create({
   contanier: {
     flex: 1,
-    // paddingVertical: StatusBar.currentHeight,
     justifyContent: "center",
     backgroundColor: "white",
   },
@@ -245,8 +239,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   signupImg: {
-    // flex: 0.5, // Set the width of the image to 20% of its parent's width
-    // aspectRatio: 1, // Maintain the aspect ratio of the image
     width: "100%",
     height: 350,
     marginBottom: 20,
@@ -292,7 +284,6 @@ const styles = StyleSheet.create({
   },
   createAccText: {
     fontSize: 30,
-    // fontWeight: "bold",
     color: "#76b49f",
     fontFamily: "MarkaziText_700Bold",
   },
@@ -300,7 +291,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 30,
     paddingVertical: 10,
     borderRadius: 10,
-    // fontWeight: "bold",
     fontFamily: "MarkaziText_700Bold",
     color: "white",
     fontSize: 20,
