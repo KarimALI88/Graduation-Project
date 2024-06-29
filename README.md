@@ -1,4 +1,4 @@
-# Graduation-Project 
+# Graduation-Project  
 There is a significant issue that ambulances, patients, or their families often face: an ambulance might take a patient to a hospital only to find out that the hospital is full, forcing them to transport the patient to another hospital, wasting precious time.
 
 Another problem is that a patient or their family might rush to the nearest hospital without knowing if the hospital can treat the patient's condition or if there is available space.
